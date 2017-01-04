@@ -29,14 +29,51 @@ class ConnectionPDO {
         return self::$instance;
     }
 
+    /**
+     * Prepara y ejecuta la consulta que se le pasa como 
+     * parametro
+     * @param type $statement La consulta
+     * @param type $data Array de datos por los que se va a filtrar en la consulta
+     * @return type boolean
+     */
     public function executeQueryWithData($statement, $data) {
         $sql = $this->connection->prepare($statement);
         return $sql->execute($data);
     }
     
+    /**
+     * Prepara y ejecuta la consulta 
+     * que se le pasa como parametro
+     * @param type $statement
+     * @return type boolean
+     */
     public function executeQueryWithoutData($statement) {
         $sql = $this->connection->prepare($statement);
         return $sql->execute();
+    }
+    
+    public function executeQueryWithoutDataFetch($statement) {
+        $sql = $this->connection->prepare($statement);
+        $sql->execute();
+        return $sql->fetch();
+    }
+    
+    public function executeQueryWithDataFetch($statement, $data) {
+        $sql = $this->connection->prepare($statement);
+        $sql->execute($data);
+        return $sql->fetch();
+    }
+    
+    public function executeQueryWithoutDataFetchAll($statement) {
+        $sql = $this->connection->prepare($statement);
+        $sql->execute();
+        return $sql->fetchAll();
+    }
+    
+    public function executeQueryWithDataFetchAll($statement, $data) {
+        $sql = $this->connection->prepare($statement);
+        $sql->execute($data);
+        return $sql->fetchAll();
     }
 
 }
