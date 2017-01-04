@@ -27,7 +27,6 @@ $app->get('/', 'index');
 $app->run();
 
 function index() {
-    $db= app\connection\ConnectionPDO::getInstance()->getConnection();
     echo "
         <h1>BIKEHELPER</h1>
     ";
@@ -221,5 +220,3 @@ function publicar() {
 }*/
 // </editor-fold>
 
-
-?>

@@ -16,8 +16,5 @@ class UserDao{
     public function login(){
         
     }
-
-
 }
-?>
 

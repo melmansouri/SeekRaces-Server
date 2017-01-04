@@ -31,7 +31,10 @@ class ConnectionPDO {
     public function getConnection() {
         return $this->connection;
     }
+    
+    public function executeQuery(){
+        
+    }
 
 }
-?>
 
