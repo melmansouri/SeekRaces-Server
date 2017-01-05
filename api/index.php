@@ -39,9 +39,12 @@ $app->get('/', 'index');
 
 $app->post('/signIn', 'signIn');
 
+$app->get('/verification', 'verificationSignIn');
+
+$app->post('/login', 'login');
+
 $app->get('/event', 'getEvent');
 
-$app->get('/verification', 'verificationSignIn');
 
 $app->run();
 
@@ -74,5 +77,12 @@ function verificationSignIn(Request $request, Response $response){
     $userDao=new app\dao\UserDao(app\connection\ConnectionPDO::getInstance());
     $result=$userDao->verificationSignIn($token);
     return $result;
+}
+
+function login(Request $request, Response $response){
+    $data = $request->getParsedBody();
+    $userDao=new app\dao\UserDao(app\connection\ConnectionPDO::getInstance());
+    $result=$userDao->login($data);
+    return json_encode($result->getArray());
 }
 

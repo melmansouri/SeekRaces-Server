@@ -55,13 +55,13 @@ class ConnectionPDO {
     public function executeQueryWithoutDataFetch($statement) {
         $sql = $this->connection->prepare($statement);
         $sql->execute();
-        return $sql->fetch();
+        return $sql->fetch(\PDO::FETCH_OBJ);
     }
     
     public function executeQueryWithDataFetch($statement, $data) {
         $sql = $this->connection->prepare($statement);
         $sql->execute($data);
-        return $sql->fetch();
+        return $sql->fetch(\PDO::FETCH_OBJ);
     }
     
     public function executeQueryWithoutDataFetchAll($statement) {

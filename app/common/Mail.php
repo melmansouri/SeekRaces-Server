@@ -5,22 +5,22 @@ namespace app\common;
 class Mail {
 
     private $mail;
-    private $username="aaaa.dddd@outlook.es";
-    private $pwd="aaaa9999";
+    private $username = "seekraces@gmail.com";
+    private $pwd = "seekdevelop8";
 
     public function __construct() {
         $this->mail = new \PHPMailer();
-        $this->mail->SMTPDebug = 1;
-        $this->mail ->SMTPOptions = array(
-    'ssl' => array(
-        'verify_peer' => false,
-        'verify_peer_name' => false,
-        'allow_self_signed' => true
-    )
-);
+        $this->mail->SMTPDebug = 2;
+        $this->mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
         $this->mail->IsSMTP();
         $this->mail->SMTPAuth = true;
-        $this->mail->Host = 'smtp-mail.outlook.com'; // "ssl://smtp.gmail.com" didn't worked
+        $this->mail->Host = 'smtp.gmail.com'; // "ssl://smtp.gmail.com" didn't worked
         $this->mail->Port = 587;
         $this->mail->SMTPSecure = 'tls';
 
@@ -33,7 +33,7 @@ class Mail {
         $this->mail->setFrom($this->username);
     }
 
-    public function sendMail($addressTo,$nameTo,$subject,$body) {
+    public function sendMail($addressTo, $nameTo, $subject, $body) {
         $this->mail->addAddress($addressTo, $nameTo);
         $this->mail->Subject = $subject;
         $this->mail->Body = $body;

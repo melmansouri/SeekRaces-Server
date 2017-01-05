@@ -5,6 +5,7 @@ class Response{
     
     private $message;
     private $content;
+    private $isOk;
 
 
     public function __construct() {
@@ -27,9 +28,19 @@ class Response{
         $this->content = $content;
     }
     
+    public function getIsOk() {
+        return $this->isOk;
+    }
+
+    public function setIsOk($isOk) {
+        $this->isOk = $isOk;
+    }
+
+        
     public function getArray(){
         return array("message"=> $this->message,
-            "content"=> $this->content);
+            "content"=> $this->content,
+            "isOk"=> $this->isOk);
     }
     
 }

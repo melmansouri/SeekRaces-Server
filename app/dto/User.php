@@ -50,6 +50,14 @@ class User{
     function setApi_key($api_key) {
         $this->api_key = $api_key;
     }
+    
+    public function getArray(){
+        return array("email"=> $this->email,
+            "pwd"=> $this->pwd,
+            "username"=> $this->username,
+            "photo"=> $this->photo,
+            "api_key"=>$this->api_key);
+    }
 }
 
 ?>
