@@ -13,7 +13,7 @@ class VerificationDao{
     public function insertSignInUserVerification($user){
         $this->deleteExistUserVerification($user->getEmail());
         
-        $token_verification= \app\common\Utils::generateTokenVerification();
+        $this->token_verification= \app\common\Utils::generateTokenVerification();
         $creation_dateTime= \app\common\Utils::now();
         
         $query="INSERT INTO verification(email, pwd, username, photo, token_verification, creation_datetime)"
@@ -24,7 +24,7 @@ class VerificationDao{
             'pwd'=> \app\common\Utils::cifrarBCrypt($user->getPwd()),
             'username'=>$user->getUsername(),
             'photo'=>$user->getPhoto(),
-            'token_verification'=>$token_verification,
+            'token_verification'=>$this->token_verification,
             'creation_datetime'=>$creation_dateTime);
         
         $result=$this->connectionDb->executeQueryWithData($query,$dataQuery);
@@ -33,11 +33,21 @@ class VerificationDao{
         
     }
     
-    private function deleteExistUserVerification($email){
+    public function deleteExistUserVerification($email){
         $query="delete from verification where email like :email";
         $dataQuery=array('email'=>$email);
         
         $result=$this->connectionDb->executeQueryWithData($query,$dataQuery);
+        
+        return $result;
+    }
+    
+    public function getDataVerificationUser($token){
+        $query="select * from verification where token_verification = :token_verification";
+        
+        $dataQuery=array(':token_verification'=>$token);
+        
+        $result=$this->connectionDb->executeQueryWithDataFetch($query,$dataQuery);
         
         return $result;
     }

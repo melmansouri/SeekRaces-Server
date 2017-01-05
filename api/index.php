@@ -46,7 +46,9 @@ $app->get('/verification', 'verificationSignIn');
 $app->run();
 
 function index() {
-    echo "
+    /*$connection=app\connection\ConnectionPDO::getInstance();
+    $result=$connection->executeQueryWithoutDataFetch("select * from user where email='sdfskdghkfgs'");
+    */echo "
         <h1>BIKEHELPER</h1>
     ";
 }
@@ -63,6 +65,14 @@ function signIn(Request $request, Response $response){
     $data = $request->getParsedBody();
     $userDao=new app\dao\UserDao(app\connection\ConnectionPDO::getInstance());
     $result=$userDao->signIn($data);
-    echo json_encode($result->getArray());
+    return json_encode($result->getArray());
+}
+
+function verificationSignIn(Request $request, Response $response){
+    $array=$request->getQueryParams();
+    $token=$array["token"];
+    $userDao=new app\dao\UserDao(app\connection\ConnectionPDO::getInstance());
+    $result=$userDao->verificationSignIn($token);
+    return $result;
 }
 
