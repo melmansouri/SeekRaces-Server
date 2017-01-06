@@ -113,17 +113,30 @@ class UserDao {
         $response->setIsOk($isOk);
         return $response;
     }
+    
+    public function sendMailToRestorePwd($email){
+        $response = new \app\dto\Response();
+        $messageResponse = 'Problemas para recuperar la contraseña';
+        $isOk = FALSE;
+        try {
 
-    /* private function getUserWithCredentials($email,$pwd) {
-      $pwdHash=\app\common\Utils::cifrarBCrypt($pwd);
-      $query = 'select * from user where email like :email and pwd = :pwd';
-      $dataQuery = array("email" => $email,
-      "pwd"=> $pwdHash);
-
-      $result = $this->connectionDb->executeQueryWithDataFetch($query, $dataQuery);
-
-      return $result;
-      } */
+            if (!$this->checkExistUser($email)) {
+                $messageResponse = "Este usuario puede que no exista.";
+            } else {
+                $verification = new \app\dao\VerificationDao($this->connectionDb);
+                if ($verification->insertUserVerificationToRestorePwd($email)) {
+                    if ($verification->sendMailVerificationRestPwd($addressTo, $nameTo)) {
+                        $isOk=true;
+                        $messageResponse = "Se le ha enviado un correo para restaurar la contraseña.";
+                    }
+                }
+            }
+        } catch (Exception $ex) {
+        }
+        $response->setMessage($messageResponse);
+        $response->setIsOk($isOk);
+        return $response;
+    }
 
     private function checkExistUser($email) {
         $query = 'select * from user where email like :email';
