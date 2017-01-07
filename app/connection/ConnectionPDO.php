@@ -37,10 +37,16 @@ class ConnectionPDO {
      * @return type boolean
      */
     public function executeQueryWithData($statement, $data) {
-        $sql = $this->connection->prepare($statement);
-        return $sql->execute($data);
+        try {
+            $sql = $this->connection->prepare($statement);
+            return $sql->execute($data);
+        } catch (Exception $ex) {
+            throw $ex;
+        }catch (\PDOException $pex) {
+            throw $pex;
+        }
     }
-    
+
     /**
      * Prepara y ejecuta la consulta 
      * que se le pasa como parametro
@@ -48,32 +54,62 @@ class ConnectionPDO {
      * @return type boolean
      */
     public function executeQueryWithoutData($statement) {
-        $sql = $this->connection->prepare($statement);
-        return $sql->execute();
+        try {
+            $sql = $this->connection->prepare($statement);
+            return $sql->execute();
+        } catch (Exception $ex) {
+            throw $ex;
+        }catch (\PDOException $pex) {
+            throw $pex;
+        }
     }
-    
+
     public function executeQueryWithoutDataFetch($statement) {
-        $sql = $this->connection->prepare($statement);
-        $sql->execute();
-        return $sql->fetch(\PDO::FETCH_OBJ);
+        try {
+            $sql = $this->connection->prepare($statement);
+            $sql->execute();
+            return $sql->fetch(\PDO::FETCH_OBJ);
+        } catch (Exception $ex) {
+            throw $ex;
+        }catch (\PDOException $pex) {
+            throw $pex;
+        }
     }
-    
+
     public function executeQueryWithDataFetch($statement, $data) {
-        $sql = $this->connection->prepare($statement);
-        $sql->execute($data);
-        return $sql->fetch(\PDO::FETCH_OBJ);
+        try {
+            $sql = $this->connection->prepare($statement);
+            $sql->execute($data);
+            return $sql->fetch(\PDO::FETCH_OBJ);
+        } catch (Exception $ex) {
+            throw $ex;
+        }catch (\PDOException $pex) {
+            throw $pex;
+        }
     }
-    
+
     public function executeQueryWithoutDataFetchAll($statement) {
-        $sql = $this->connection->prepare($statement);
-        $sql->execute();
-        return $sql->fetchAll();
+        try {
+            $sql = $this->connection->prepare($statement);
+            $sql->execute();
+            return $sql->fetchAll();
+        } catch (Exception $ex) {
+            throw $ex;
+        }catch (\PDOException $pex) {
+            throw $pex;
+        }
     }
-    
+
     public function executeQueryWithDataFetchAll($statement, $data) {
-        $sql = $this->connection->prepare($statement);
-        $sql->execute($data);
-        return $sql->fetchAll();
+        try {
+            $sql = $this->connection->prepare($statement);
+            $sql->execute($data);
+            return $sql->fetchAll();
+        } catch (Exception $ex) {
+            throw $ex;
+        }catch (\PDOException $pex) {
+            throw $pex;
+        }
     }
 
 }

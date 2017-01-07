@@ -43,32 +43,28 @@ $app->get('/user/verification', 'verificationSignIn');
 
 $app->post('/user/login', 'login');
 
-$app->get('/user/forgotPwd/{email}', 'forgotPwd');
+/*$app->get('/user/forgotPwd/{email}', 'forgotPwd');
 
-$app->post('/user/restPwd', 'restPwd');
-
-//$app->get('/event', 'getEvent');
+$app->post('/user/restPwd', 'restPwd');*/
 
 $app->get('/event', 'getEvent');
 
-$app->post('/event/new', 'addNewEvent');
+$app->post('/event', 'addNewEvent');
+
+$app->delete('/event/{id}', 'deleteEvent');
+
+$app->post('/event/{id}/reviews', 'addNewOpinionEvent');
+
+$app->get('/event/{id}/reviews', 'getEventReviews');
+
+//$app->put('/event/{id}/reviews', 'editEventOpinion');
 
 $app->run();
 
 function index() {
-    /*$connection=app\connection\ConnectionPDO::getInstance();
-    $result=$connection->executeQueryWithoutDataFetch("select * from user where email='sdfskdghkfgs'");
-    */echo "
+    echo "
         <h1>SEEKRACES</h1>
     ";
-}
-
-function getEvent(Request $request, Response $response) {
-    $array=$request->getQueryParams();
-    
-    $prueba=$array["token"];
-    $otra = new \app\dto\User();
-    echo $prueba;
 }
 
 function signIn(Request $request, Response $response){ 
@@ -93,12 +89,12 @@ function login(Request $request, Response $response){
     return json_encode($result->getArray());
 }
 
-function forgotPwd(Request $request, Response $response,$args){
+/*function forgotPwd(Request $request, Response $response,$args){
     $email = $args['email'];
     $userDao=new app\dao\UserDao(app\connection\ConnectionPDO::getInstance());
     $result=$userDao->sendMailToRestorePwd($email);
     return json_encode($result->getArray());
-}
+}*/
 
 function addNewEvent(Request $request, Response $response){
     $data = $request->getParsedBody();
@@ -106,4 +102,31 @@ function addNewEvent(Request $request, Response $response){
     $result=$eventDao->addNewEvent($data);
     return json_encode($result->getArray());
 }
+
+function getEvent(Request $request, Response $response) {
+    $data =$request->getQueryParams();
+    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $result=$eventDao->getEvent($data);
+    return json_encode($result->getArray());
+}
+
+function addNewOpinionEvent(Request $request, Response $response,$args) {
+    $data = $request->getParsedBody();
+    $eventDao=new app\dao\OpinionDao(app\connection\ConnectionPDO::getInstance());
+    $result=$eventDao->addNewOpinionEvent($args,$data);
+    return json_encode($result->getArray());
+}
+
+function getEventReviews(Request $request, Response $response,$args) {
+    $eventDao=new app\dao\OpinionDao(app\connection\ConnectionPDO::getInstance());
+    $result=$eventDao->getEventReviews($args);
+    return json_encode($result->getArray());
+}
+
+/*function editEventOpinion(Request $request, Response $response,$args) {
+    $data = $request->getParsedBody();
+    $eventDao=new app\dao\OpinionDao(app\connection\ConnectionPDO::getInstance());
+    $result=$eventDao->updateOpinion($args,$data);
+    return json_encode($result->getArray());
+}*/
 

@@ -36,7 +36,9 @@ class UserDao {
             }
         } catch (Exception $ex) {
             
+        } catch (\PDOException $pex) {
         }
+
         $response->setMessage($messageResponse);
         $response->setIsOk($isOk);
         return $response;
@@ -62,8 +64,9 @@ class UserDao {
             }
         } catch (Exception $ex) {
             $messageResponse = '<h3>Error en la verificación</h3>';
+        } catch (\PDOException $pex) {
+            $messageResponse = '<h3>Error en la verificación</h3>';
         }
-
         return $messageResponse;
     }
 
@@ -108,7 +111,9 @@ class UserDao {
                 }
             }
         } catch (Exception $ex) {
+        } catch (\PDOException $pex) {
         }
+
         $response->setMessage($messageResponse);
         $response->setIsOk($isOk);
         return $response;
@@ -132,7 +137,9 @@ class UserDao {
                 }
             }
         } catch (Exception $ex) {
+        } catch (\PDOException $pex) {
         }
+
         $response->setMessage($messageResponse);
         $response->setIsOk($isOk);
         return $response;

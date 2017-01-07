@@ -6,7 +6,7 @@ class Event{
     private $id;
     private $user;
     private $name;
-    private $descripcion;
+    private $description;
     private $image;
     private $distance;
     private $country;
@@ -33,8 +33,8 @@ class Event{
         return $this->name;
     }
 
-    function getDescripcion() {
-        return $this->descripcion;
+    function getDescription() {
+        return $this->description;
     }
 
     function getImage() {
@@ -85,8 +85,8 @@ class Event{
         $this->name = $name;
     }
 
-    function setDescripcion($descripcion) {
-        $this->descripcion = $descripcion;
+    function setDescription($descripcion) {
+        $this->description = $descripcion;
     }
 
     function setImage($image) {
@@ -125,5 +125,20 @@ class Event{
         $this->rating = $rating;
     }
     
+    public function getArray(){
+        return array(
+            "id"=> $this->id,
+            "user"=> $this->user,
+            "name"=> $this->name,
+            "description"=> $this->description,
+            "image"=> $this->image,
+            "distance"=> $this->distance,
+            "country"=> $this->country,
+            "city"=> $this->city,
+            "date_time_init"=> $this->date_time_init,
+            "web"=> $this->web,
+            "num_votes"=> $this->num_votes,
+            "total_scores"=> $this->total_scores,
+            "rating"=> $this->rating);
+    }
 }
-?>
