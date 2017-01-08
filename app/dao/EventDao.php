@@ -108,5 +108,63 @@ class EventDao {
 
         return $response;
     }
+    
+    public function deleteEvent($data) {
+        $response = new \app\dto\Response();
+        $messageResponse = "Error al intentar borrar la carrera";
+        $isOk = FALSE;
+        try {
+            $query = "DELETE FROM event WHERE id = :id";
+            $dataQuery = array("id" => $data["id"]);
+            if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
+                $isOk = TRUE;
+                $messageResponse = "Se ha eliminado con éxito";
+            }
+        } catch (Exception $ex) {
+        } catch (\PDOException $pex) {
+        }
+
+
+        $response->setIsOk($isOk);
+        $response->setMessage($messageResponse);
+
+        return $response;
+    }
+    
+    public function editEvent($args, $data) {
+        $response = new \app\dto\Response();
+        $messageResponse = "No se ha podido editar la carrera";
+        $isOk = FALSE;
+        try {
+            $query = "UPDATE event SET name = :name, description = :description, image = :image, distance = :distance, country = :country, city = :city, date_time_init = :date_time_init, web = :web"
+                    . " WHERE "
+                    . "user = :user AND id = :id";
+            $dataQuery = array(
+                "user" => $data["user"],
+                "id" => $args["id"],
+                "name" => $data["name"],
+                "description" => $data["description"],
+                "image" => $data["image"],
+                "distance" => $data["distance"],
+                "country" => $data["country"],
+                "city" => $data["city"],
+                "date_time_init" => $data["date_time_init"],
+                "web" => $data["web"]);
+            if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
+                $isOk = TRUE;
+                $messageResponse="Éxito al editar la carrera";
+            }
+        } catch (Exception $ex) {
+            
+        } catch (\PDOException $pex) {
+            
+        }
+
+
+        $response->setIsOk($isOk);
+        $response->setMessage($messageResponse);
+
+        return $response;
+    }
 
 }

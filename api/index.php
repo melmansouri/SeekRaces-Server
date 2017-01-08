@@ -53,6 +53,8 @@ $app->post('/event', 'addNewEvent');
 
 $app->delete('/event/{id}', 'deleteEvent');
 
+$app->put('/event/{id}', 'editEvent');
+
 $app->post('/event/{id}/reviews', 'addNewOpinionEvent');
 
 $app->get('/event/{id}/reviews', 'getEventReviews');
@@ -110,16 +112,29 @@ function getEvent(Request $request, Response $response) {
     return json_encode($result->getArray());
 }
 
+function editEvent(Request $request, Response $response,$args) {
+    $data = $request->getParsedBody();
+    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $result=$eventDao->editEvent($args,$data);
+    return json_encode($result->getArray());
+}
+
+function deleteEvent(Request $request, Response $response,$args) {
+    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $result=$eventDao->deleteEvent($args);
+    return json_encode($result->getArray());
+}
+
 function addNewOpinionEvent(Request $request, Response $response,$args) {
     $data = $request->getParsedBody();
-    $eventDao=new app\dao\OpinionDao(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->addNewOpinionEvent($args,$data);
+    $opinionDao=new app\dao\OpinionDao(app\connection\ConnectionPDO::getInstance());
+    $result=$opinionDao->addNewOpinionEvent($args,$data);
     return json_encode($result->getArray());
 }
 
 function getEventReviews(Request $request, Response $response,$args) {
-    $eventDao=new app\dao\OpinionDao(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->getEventReviews($args);
+    $opinionDao=new app\dao\OpinionDao(app\connection\ConnectionPDO::getInstance());
+    $result=$opinionDao->getEventReviews($args);
     return json_encode($result->getArray());
 }
 
