@@ -61,6 +61,12 @@ $app->get('/event/{id}/reviews', 'getEventReviews');
 
 //$app->put('/event/{id}/reviews', 'editEventOpinion');
 
+$app->post('/event/favorites', 'addEventToFavorite');
+
+$app->get('/event/{id}/favorites', 'getEventsFavorites');
+
+$app->delete('/event/{id}/favorites', 'getEventsFavorites');
+
 $app->run();
 
 function index() {
