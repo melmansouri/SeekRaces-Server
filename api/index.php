@@ -61,11 +61,11 @@ $app->get('/event/{id}/reviews', 'getEventReviews');
 
 //$app->put('/event/{id}/reviews', 'editEventOpinion');
 
-$app->post('/event/favorites', 'addEventToFavorite');
+$app->post('/user/event/favorites', 'addEventToFavorite');
 
-$app->get('/event/{id}/favorites', 'getEventsFavorites');
+$app->get('/user/{email}/event/favorites', 'getEventsFavorites');
 
-$app->delete('/event/{id}/favorites', 'getEventsFavorites');
+$app->delete('/user/{email}/event/{id}/favorites', 'deleteEventFromFavorites');
 
 $app->run();
 
@@ -151,3 +151,22 @@ function getEventReviews(Request $request, Response $response,$args) {
     return json_encode($result->getArray());
 }*/
 
+function addEventToFavorite(Request $request, Response $response){
+    $data = $request->getParsedBody();
+    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $result=$eventDao->addNewEvent($data);
+    return json_encode($result->getArray());
+}
+
+function getEventsFavorites(Request $request, Response $response) {
+    $data =$request->getQueryParams();
+    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $result=$eventDao->getEvent($data);
+    return json_encode($result->getArray());
+}
+
+function deleteEventFromFavorites(Request $request, Response $response,$args) {
+    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $result=$eventDao->deleteEvent($args);
+    return json_encode($result->getArray());
+}
