@@ -6,60 +6,59 @@ class Opinion{
     private $photo;
     private $score;
     private $comment;
-    private $dateTimeVote;
+    private $dateTimeOpinion;
     
     public function __construct() {
         
     }
-    
-    public function getUsername() {
+    function getUsername() {
         return $this->username;
     }
 
-    public function getPhoto() {
+    function getPhoto() {
         return $this->photo;
     }
 
-    public function getScore() {
+    function getScore() {
         return $this->score;
     }
 
-    public function getComment() {
+    function getComment() {
         return $this->comment;
     }
 
-    public function getDateTimeVote() {
-        return $this->dateTimeVote;
+    function getDateTimeOpinion() {
+        return $this->dateTimeOpinion;
     }
 
-    public function setUsername($username) {
+    function setUsername($username) {
         $this->username = $username;
     }
 
-    public function setPhoto($photo) {
+    function setPhoto($photo) {
         $this->photo = $photo;
     }
 
-    public function setScore($score) {
+    function setScore($score) {
         $this->score = $score;
     }
 
-    public function setComment($comment) {
+    function setComment($comment) {
         $this->comment = $comment;
     }
 
-    public function setDateTimeVote($dateTimeVote) {
-        $this->dateTimeVote = $dateTimeVote;
+    function setDateTimeOpinion($dateTimeOpinion) {
+        $this->dateTimeOpinion = $dateTimeOpinion;
     }
 
-
+    
     public function getArray(){
         return array(
             "username"=> $this->username,
             "photo"=> $this->photo,
             "score"=> $this->score,
             "comment"=> $this->comment,
-            "dateTimeVote"=> $this->dateTimeVote
+            "dateTimeOpinion"=> $this->dateTimeOpinion
         );
     }
     

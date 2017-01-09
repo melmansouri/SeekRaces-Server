@@ -13,7 +13,7 @@ class Event{
     private $city;
     private $date_time_init;
     private $web;
-    private $num_votes;
+    private $num_reviews;
     private $total_scores;
     private $rating;
     
@@ -61,8 +61,8 @@ class Event{
         return $this->web;
     }
 
-    function getNum_votes() {
-        return $this->num_votes;
+    function getNum_reviews() {
+        return $this->num_reviews;
     }
 
     function getTotal_scores() {
@@ -85,8 +85,8 @@ class Event{
         $this->name = $name;
     }
 
-    function setDescription($descripcion) {
-        $this->description = $descripcion;
+    function setDescription($description) {
+        $this->description = $description;
     }
 
     function setImage($image) {
@@ -113,8 +113,8 @@ class Event{
         $this->web = $web;
     }
 
-    function setNum_votes($num_votes) {
-        $this->num_votes = $num_votes;
+    function setNum_reviews($num_reviews) {
+        $this->num_reviews = $num_reviews;
     }
 
     function setTotal_scores($total_scores) {
@@ -124,7 +124,8 @@ class Event{
     function setRating($rating) {
         $this->rating = $rating;
     }
-    
+
+        
     public function getArray(){
         return array(
             "id"=> $this->id,
@@ -137,7 +138,7 @@ class Event{
             "city"=> $this->city,
             "date_time_init"=> $this->date_time_init,
             "web"=> $this->web,
-            "num_votes"=> $this->num_votes,
+            "num_reviews"=> $this->num_reviews,
             "total_scores"=> $this->total_scores,
             "rating"=> $this->rating);
     }

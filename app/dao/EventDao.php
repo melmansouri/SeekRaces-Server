@@ -89,7 +89,7 @@ class EventDao {
                     $event->setCity($eventos[$i]["city"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
-                    $event->setNum_votes($eventos[$i]["num_votes"]);
+                    $event->setNum_reviews($eventos[$i]["num_reviews"]);
                     $event->setTotal_scores($eventos[$i]["total_scores"]);
                     $event->setRating($eventos[$i]["rating"]);
                     array_push($arrayEventosFinal, $event->getArray());
