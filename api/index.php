@@ -19,10 +19,10 @@ spl_autoload_register(function ($classname) {
             $countNameSpacesApp++;
         }
         if ($countNameSpacesApp==1) {
-            $pathname.="\\".$classname;
+            $pathname.="/".$classname;
         }else{
            $countNameSpacesApp=1;
-           $pathname="\\".$classname;
+           $pathname="/".$classname;
         }
     }
     $pathname = $pathname . ".php";
@@ -59,7 +59,7 @@ $app->post('/event/{id}/reviews', 'addNewOpinionEvent');
 
 $app->get('/event/{id}/reviews', 'getEventReviews');
 
-//$app->put('/event/{id}/reviews', 'editEventOpinion');
+$app->put('/user/{email}/event/{id}/reviews', 'editEventOpinion');
 
 $app->post('/user/event/favorites', 'addEventToFavorite');
 
@@ -77,7 +77,7 @@ function index() {
 
 function signIn(Request $request, Response $response){ 
     $data = $request->getParsedBody();
-    $userDao=new app\dao\UserDao(app\connection\ConnectionPDO::getInstance());
+    $userDao=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
     $result=$userDao->signIn($data);
     return json_encode($result->getArray());
 }
@@ -85,14 +85,14 @@ function signIn(Request $request, Response $response){
 function verificationSignIn(Request $request, Response $response){
     $array=$request->getQueryParams();
     $token=$array["token"];
-    $userDao=new app\dao\UserDao(app\connection\ConnectionPDO::getInstance());
+    $userDao=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
     $result=$userDao->verificationSignIn($token);
     return $result;
 }
 
 function login(Request $request, Response $response){
     $data = $request->getParsedBody();
-    $userDao=new app\dao\UserDao(app\connection\ConnectionPDO::getInstance());
+    $userDao=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
     $result=$userDao->login($data);
     return json_encode($result->getArray());
 }
@@ -106,67 +106,67 @@ function login(Request $request, Response $response){
 
 function addNewEvent(Request $request, Response $response){
     $data = $request->getParsedBody();
-    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
     $result=$eventDao->addNewEvent($data);
     return json_encode($result->getArray());
 }
 
 function getEvent(Request $request, Response $response) {
     $data =$request->getQueryParams();
-    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
     $result=$eventDao->getEvent($data);
     return json_encode($result->getArray());
 }
 
 function editEvent(Request $request, Response $response,$args) {
     $data = $request->getParsedBody();
-    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
     $result=$eventDao->editEvent($args,$data);
     return json_encode($result->getArray());
 }
 
 function deleteEvent(Request $request, Response $response,$args) {
-    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
     $result=$eventDao->deleteEvent($args);
     return json_encode($result->getArray());
 }
 
 function addNewOpinionEvent(Request $request, Response $response,$args) {
     $data = $request->getParsedBody();
-    $opinionDao=new app\dao\OpinionDao(app\connection\ConnectionPDO::getInstance());
+    $opinionDao=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
     $result=$opinionDao->addNewOpinionEvent($args,$data);
     return json_encode($result->getArray());
 }
 
 function getEventReviews(Request $request, Response $response,$args) {
-    $opinionDao=new app\dao\OpinionDao(app\connection\ConnectionPDO::getInstance());
+    $opinionDao=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
     $result=$opinionDao->getEventReviews($args);
     return json_encode($result->getArray());
 }
 
-/*function editEventOpinion(Request $request, Response $response,$args) {
+function editEventOpinion(Request $request, Response $response,$args) {
     $data = $request->getParsedBody();
-    $eventDao=new app\dao\OpinionDao(app\connection\ConnectionPDO::getInstance());
+    $eventDao=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
     $result=$eventDao->updateOpinion($args,$data);
     return json_encode($result->getArray());
-}*/
+}
 
 function addEventToFavorite(Request $request, Response $response){
     $data = $request->getParsedBody();
-    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
     $result=$eventDao->addNewEvent($data);
     return json_encode($result->getArray());
 }
 
 function getEventsFavorites(Request $request, Response $response) {
     $data =$request->getQueryParams();
-    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
     $result=$eventDao->getEvent($data);
     return json_encode($result->getArray());
 }
 
 function deleteEventFromFavorites(Request $request, Response $response,$args) {
-    $eventDao=new app\dao\EventDao(app\connection\ConnectionPDO::getInstance());
+    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
     $result=$eventDao->deleteEvent($args);
     return json_encode($result->getArray());
 }

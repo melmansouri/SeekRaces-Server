@@ -1,8 +1,8 @@
 <?php
 
-namespace app\dao;
+namespace app\controllers;
 
-class OpinionDao {
+class OpinionController {
 
     private $connectionDb;
 
@@ -11,7 +11,7 @@ class OpinionDao {
     }
 
     public function addNewOpinionEvent($args, $data) {
-        $response = new \app\dto\Response();
+        $response = new \app\data\Response();
         $messageResponse = "Error al añadir tu comentario";
         $isOk = FALSE;
         try {
@@ -42,7 +42,7 @@ class OpinionDao {
     }
 
     public function getEventReviews($data) {
-        $response = new \app\dto\Response();
+        $response = new \app\data\Response();
         $messageResponse = "Problemas para obtener los comentarios";
         $isOk = FALSE;
         try {
@@ -80,8 +80,9 @@ class OpinionDao {
         return $response;
     }
     
-    /*public function updateOpinion($args, $data) {
-        $response = new \app\dto\Response();
+    //Comprobar el trigger para que modifique solo el score y el rating de la tabla event en caso de editar la opinion
+    public function updateOpinion($args, $data) {
+        $response = new \app\data\Response();
         $messageResponse = "No se ha podido editar tu comentario";
         $isOk = FALSE;
         try {
@@ -109,6 +110,6 @@ class OpinionDao {
         $response->setMessage($messageResponse);
 
         return $response;
-    }*/
+    }
 
 }

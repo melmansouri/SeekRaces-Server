@@ -1,8 +1,8 @@
 <?php
 
-namespace app\dao;
+namespace app\controllers;
 
-class FavoriteDao {
+class FavoriteController {
 
     private $connectionDb;
 
@@ -11,7 +11,7 @@ class FavoriteDao {
     }
 
     public function addEventToFavorite($data) {
-        $response = new \app\dto\Response();
+        $response = new \app\data\Response();
         $messageResponse = "Error al añadir la carrera como favorita";
         $isOk = FALSE;
         try {
@@ -36,7 +36,7 @@ class FavoriteDao {
     }
     
     public function getEventsFavorites($data){
-        $response = new \app\dto\Response();
+        $response = new \app\data\Response();
         $messageResponse = "error al obtener las carreras favoritas";
         $isOk = FALSE;
         try {
@@ -48,7 +48,7 @@ class FavoriteDao {
             if ($eventos) {
                 $arrayEventosFinal= array();
                 for ($i = 0; $i < count($eventos); $i++) {
-                    $event=new \app\dto\Event();
+                    $event=new \app\data\Event();
                     $event->setId($eventos[$i]["id"]);
                     $event->setUser($eventos[$i]["user"]);
                     $event->setName($eventos[$i]["name"]);
@@ -80,7 +80,7 @@ class FavoriteDao {
     }
     
     public function deleteEventFromFavorites($data) {
-        $response = new \app\dto\Response();
+        $response = new \app\data\Response();
         $messageResponse = "Error al intentar borrar la carrera de favoritos";
         $isOk = FALSE;
         try {

@@ -1,8 +1,8 @@
 <?php
 
-namespace app\dao;
+namespace app\controllers;
 
-class UserDao {
+class UserController {
 
     private $connectionDb;
 
@@ -15,16 +15,18 @@ class UserDao {
         $messageResponse = 'Error al registrarse';
         $isOk = FALSE;
         try {
-            $user = new \app\dto\User();
+            $user = new \app\data\User();
             $user->setEmail($data['email']);
             $user->setPwd($data['pwd']);
             $user->setUsername($data['username']);
             $user->setPhoto($data['photo']);
+            $user->setCountry($data['country']);
+            $user->setToken_push($data['token_push']);
 
             if ($this->checkExistUser($user->getEmail())) {
                 $messageResponse = "Ya existe un usuario con este correo";
             } else {
-                $verification = new \app\dao\VerificationDao($this->connectionDb);
+                $verification = new \app\controllers\VerificationController($this->connectionDb);
                 if ($verification->insertSignInUserVerification($user)) {
                     if ($verification->sendMailVerification($user->getEmail(), $user->getUsername())) {
                         $isOk = TRUE;
@@ -37,6 +39,7 @@ class UserDao {
         } catch (Exception $ex) {
             
         } catch (\PDOException $pex) {
+            
         }
 
         $response->setMessage($messageResponse);
@@ -47,15 +50,21 @@ class UserDao {
     public function verificationSignIn($token) {
         $messageResponse = '<h3>Esta verificacion ya no es válida</h3>';
         try {
-            $verification = new \app\dao\VerificationDao($this->connectionDb);
-            $user = new \app\dto\User();
+            $verification = new \app\controllers\VerificationController($this->connectionDb);
+            $user = new \app\data\User();
 
             $dataUserVerification = $verification->getDataVerificationUser($token);
             if ($dataUserVerification) {
                 $user->setEmail($dataUserVerification->email);
                 $user->setPwd($dataUserVerification->pwd);
                 $user->setUsername($dataUserVerification->username);
-                $user->setPhoto($dataUserVerification->photo);
+                if (!empty($dataUserVerification->photoBase64) && isset($dataUserVerification->photoBase64)) {
+                    $file_path_photo = \app\common\Utils::base64ToFile($dataUserVerification->photoBase64, TYPE_PROFILE, microtime());
+                    $user->setPhoto_url($file_path_photo);
+                }
+
+                $user->setCountry($dataUserVerification->country);
+                $user->setToken_push($dataUserVerification->token_push);
                 if ($this->insertIntoUserTable($user)) {
                     $verification->deleteExistUserVerification($user->getEmail());
                     $messageResponse = '<h3>Bienvenido a SeekRaces</h3>';
@@ -71,24 +80,26 @@ class UserDao {
     }
 
     public function insertIntoUserTable($user) {
-        $query = "INSERT INTO user(email, pwd, username, photo)"
+        $query = "INSERT INTO user(email, pwd, username, photo_url, country, token_push)"
                 . " VALUES"
-                . " (:email, :pwd, :username, :photo)";
+                . " (:email, :pwd, :username, :photo_url, :country, :token_push)";
 
         $dataQuery = array('email' => $user->getEmail(),
             'pwd' => $user->getPwd(),
             'username' => $user->getUsername(),
-            'photo' => $user->getPhoto());
+            'photo_url' => $user->getPhoto_url(),
+            'country' => $user->getCountry(),
+            'token_push' => $user->getToken_push());
         $result = $this->connectionDb->executeQueryWithData($query, $dataQuery);
 
         return $result;
     }
 
     public function login($data) {
-        $response = new \app\dto\Response();
+        $response = new \app\data\Response();
         $messageResponse = 'Error en el servidor';
         $isOk = FALSE;
-        $user = new \app\dto\User();
+        $user = new \app\data\User();
         try {
             $email = $data['email'];
             $pwd = $data['pwd'];
@@ -105,22 +116,25 @@ class UserDao {
                     if (password_verify($pwd, $pwdhash)) {
                         $messageResponse = "Bienvenido";
                         $user->setUsername($userFromDb->username);
-                        $user->setPhoto($userFromDb->photo);
+                        $user->setPhoto_url($userFromDb->photo_url);
+                        $user->setPhotoBas64($userFromDb->photoBase64);
                         $response->setContent($user->getArray());
                     }
                 }
             }
         } catch (Exception $ex) {
+            
         } catch (\PDOException $pex) {
+            
         }
 
         $response->setMessage($messageResponse);
         $response->setIsOk($isOk);
         return $response;
     }
-    
-    public function sendMailToRestorePwd($email){
-        $response = new \app\dto\Response();
+
+    public function sendMailToRestorePwd($email) {
+        $response = new \app\data\Response();
         $messageResponse = 'Problemas para recuperar la contraseña';
         $isOk = FALSE;
         try {
@@ -128,16 +142,18 @@ class UserDao {
             if (!$this->checkExistUser($email)) {
                 $messageResponse = "Este usuario puede que no exista.";
             } else {
-                $verification = new \app\dao\VerificationDao($this->connectionDb);
+                $verification = new \app\controllers\VerificationController($this->connectionDb);
                 if ($verification->insertUserVerificationToRestorePwd($email)) {
                     if ($verification->sendMailVerificationRestPwd($addressTo, $nameTo)) {
-                        $isOk=true;
+                        $isOk = true;
                         $messageResponse = "Se le ha enviado un correo para restaurar la contraseña.";
                     }
                 }
             }
         } catch (Exception $ex) {
+            
         } catch (\PDOException $pex) {
+            
         }
 
         $response->setMessage($messageResponse);

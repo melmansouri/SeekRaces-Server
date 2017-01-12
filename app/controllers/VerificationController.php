@@ -1,8 +1,8 @@
 <?php
 
-namespace app\dao;
+namespace app\controllers;
 
-class VerificationDao {
+class VerificationController {
 
     private $connectionDb;
     private $token_verification;
@@ -18,14 +18,15 @@ class VerificationDao {
             $this->token_verification = \app\common\Utils::generateTokenVerification();
             $creation_dateTime = \app\common\Utils::nowDateTime();
 
-            $query = "INSERT INTO verification(email, pwd, username, photo, token_verification, creation_datetime)"
+            $query = "INSERT INTO verification(email, pwd, username, photoBase64, token_push, token_verification, creation_datetime)"
                     . " VALUES"
-                    . " (:email, :pwd, :username, :photo, :token_verification, :creation_datetime)";
+                    . " (:email, :pwd, :username, :photoBase64, :token_push,:token_verification, :creation_datetime)";
 
             $dataQuery = array('email' => $user->getEmail(),
                 'pwd' => \app\common\Utils::cifrarBCrypt($user->getPwd()),
                 'username' => $user->getUsername(),
-                'photo' => $user->getPhoto(),
+                'photoBase64' => $user->getPhotoBas64(),
+                'token_push'=>$user->getToken_push(),
                 'token_verification' => $this->token_verification,
                 'creation_datetime' => $creation_dateTime);
 

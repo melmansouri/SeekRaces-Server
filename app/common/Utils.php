@@ -26,5 +26,22 @@ class Utils {
         $pwdHash = password_hash($pwd, PASSWORD_BCRYPT, $opciones);
         return $pwdHash;
     }
+    
+    public static function base64ToFile($base64,$type,$name){
+        $filepath="";
+        try{
+            $data = base64_decode($base64);
+        
+        $filepath=$type."/".$name.".png";
+        
+        file_put_contents(PATH_PROJECT.$filepath, $data);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+        return $filepath;
+        
+    }
+    
+    
 
 }

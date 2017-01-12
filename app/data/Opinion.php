@@ -1,5 +1,5 @@
 <?php
-namespace app\dto;
+namespace app\data;
 
 class Opinion{
     private $username;

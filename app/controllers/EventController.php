@@ -1,8 +1,8 @@
 <?php
 
-namespace app\dao;
+namespace app\controllers;
 
-class EventDao {
+class EventController {
 
     private $connectionDb;
 
@@ -11,17 +11,23 @@ class EventDao {
     }
 
     public function addNewEvent($data) {
-        $response = new \app\dto\Response();
+        $response = new \app\data\Response();
         $messageResponse = "Error al añadir la carrera";
         $isOk = FALSE;
         try {
             $query = "INSERT INTO event(user, name, description, image,distance,country,city,date_time_init,web)"
                     . " VALUES"
                     . " (:user, :name, :description, :image,:distance,:country,:city,:date_time_init,:web)";
+            $image = "";
+            if (!empty($data["image"]) && isset($data["image"])) {
+                $file_path_photo = \app\common\Utils::base64ToFile($data["image"], TYPE_EVENT, microtime());
+                $image=$file_path_photo;
+            }
+
             $dataQuery = array("user" => $data["user"],
                 "name" => $data["name"],
                 "description" => $data["description"],
-                "image" => $data["image"],
+                "image" => $image,
                 "distance" => $data["distance"],
                 "country" => $data["country"],
                 "city" => $data["city"],
@@ -32,7 +38,9 @@ class EventDao {
                 $messageResponse = "Nueva carrera añadida";
             }
         } catch (Exception $ex) {
+            
         } catch (\PDOException $pex) {
+            
         }
 
 
@@ -41,44 +49,44 @@ class EventDao {
 
         return $response;
     }
-    
-    public function getEvent($data){
-        $response = new \app\dto\Response();
+
+    public function getEvent($data) {
+        $response = new \app\data\Response();
         $messageResponse = "Problemas para obtener las carreras";
         $isOk = FALSE;
         try {
             $query = "SELECT * FROM event WHERE country like :country and city like :city";
             $dataQuery = array("country" => "%%",
                 "city" => "%%");
-            
+
             if (array_key_exists("country", $data)) {
-                $dataQuery["country"]="%".$data["country"]."%";
+                $dataQuery["country"] = "%" . $data["country"] . "%";
             }
-            
+
             if (array_key_exists("city", $data)) {
-                $dataQuery["city"]="%".$data["city"]."%";
+                $dataQuery["city"] = "%" . $data["city"] . "%";
             }
-            
+
             if (array_key_exists("distance", $data)) {
-                $query.=" AND distance = :distance";
-                $dataQuery["distance"]=$data["distance"];
+                $query .= " AND distance = :distance";
+                $dataQuery["distance"] = $data["distance"];
             }
-            
+
             if (array_key_exists("date_interval_init", $data) && !array_key_exists("date_interval_end", $data)) {
-                $query.=" AND date__time_init < :date_interval_init";
-                $dataQuery["date_interval_init"]=$data["date_interval_init"];
-            }else if(array_key_exists("date_interval_init", $data) && array_key_exists("date_interval_end", $data)){
-                $query.=" AND date__time_init between :date_interval_init AND date_interval_end";
-                $dataQuery["date_interval_init"]=$data["date_interval_init"];
-                $dataQuery["date_interval_end"]=$data["date_interval_end"];
+                $query .= " AND date__time_init < :date_interval_init";
+                $dataQuery["date_interval_init"] = $data["date_interval_init"];
+            } else if (array_key_exists("date_interval_init", $data) && array_key_exists("date_interval_end", $data)) {
+                $query .= " AND date__time_init between :date_interval_init AND date_interval_end";
+                $dataQuery["date_interval_init"] = $data["date_interval_init"];
+                $dataQuery["date_interval_end"] = $data["date_interval_end"];
             }
-            
-            $eventos=$this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
-            
+
+            $eventos = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
+
             if ($eventos) {
-                $arrayEventosFinal= array();
+                $arrayEventosFinal = array();
                 for ($i = 0; $i < count($eventos); $i++) {
-                    $event=new \app\dto\Event();
+                    $event = new \app\data\Event();
                     $event->setId($eventos[$i]["id"]);
                     $event->setUser($eventos[$i]["user"]);
                     $event->setName($eventos[$i]["name"]);
@@ -95,11 +103,13 @@ class EventDao {
                     array_push($arrayEventosFinal, $event->getArray());
                 }
                 $isOk = TRUE;
-                $messageResponse="";
+                $messageResponse = "";
                 $response->setContent($arrayEventosFinal);
             }
         } catch (Exception $ex) {
+            
         } catch (\PDOException $pex) {
+            
         }
 
 
@@ -108,9 +118,9 @@ class EventDao {
 
         return $response;
     }
-    
+
     public function deleteEvent($data) {
-        $response = new \app\dto\Response();
+        $response = new \app\data\Response();
         $messageResponse = "Error al intentar borrar la carrera";
         $isOk = FALSE;
         try {
@@ -121,7 +131,9 @@ class EventDao {
                 $messageResponse = "Se ha eliminado con éxito";
             }
         } catch (Exception $ex) {
+            
         } catch (\PDOException $pex) {
+            
         }
 
 
@@ -130,9 +142,9 @@ class EventDao {
 
         return $response;
     }
-    
+
     public function editEvent($args, $data) {
-        $response = new \app\dto\Response();
+        $response = new \app\data\Response();
         $messageResponse = "No se ha podido editar la carrera";
         $isOk = FALSE;
         try {
@@ -152,7 +164,7 @@ class EventDao {
                 "web" => $data["web"]);
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                 $isOk = TRUE;
-                $messageResponse="Éxito al editar la carrera";
+                $messageResponse = "Éxito al editar la carrera";
             }
         } catch (Exception $ex) {
             
