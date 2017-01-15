@@ -11,7 +11,7 @@ class FavoriteController {
     }
 
     public function addEventToFavorite($data) {
-        $response = new \app\data\Response();
+        $response = new \app\entities\Response();
         $messageResponse = "Error al añadir la carrera como favorita";
         $isOk = FALSE;
         try {
@@ -36,7 +36,7 @@ class FavoriteController {
     }
     
     public function getEventsFavorites($data){
-        $response = new \app\data\Response();
+        $response = new \app\entities\Response();
         $messageResponse = "error al obtener las carreras favoritas";
         $isOk = FALSE;
         try {
@@ -48,7 +48,7 @@ class FavoriteController {
             if ($eventos) {
                 $arrayEventosFinal= array();
                 for ($i = 0; $i < count($eventos); $i++) {
-                    $event=new \app\data\Event();
+                    $event=new \app\entities\Event();
                     $event->setId($eventos[$i]["id"]);
                     $event->setUser($eventos[$i]["user"]);
                     $event->setName($eventos[$i]["name"]);
@@ -80,7 +80,7 @@ class FavoriteController {
     }
     
     public function deleteEventFromFavorites($data) {
-        $response = new \app\data\Response();
+        $response = new \app\entities\Response();
         $messageResponse = "Error al intentar borrar la carrera de favoritos";
         $isOk = FALSE;
         try {

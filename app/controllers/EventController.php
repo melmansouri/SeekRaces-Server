@@ -11,7 +11,7 @@ class EventController {
     }
 
     public function addNewEvent($data) {
-        $response = new \app\data\Response();
+        $response = new \app\entities\Response();
         $messageResponse = "Error al añadir la carrera";
         $isOk = FALSE;
         try {
@@ -51,7 +51,7 @@ class EventController {
     }
 
     public function getEvent($data) {
-        $response = new \app\data\Response();
+        $response = new \app\entities\Response();
         $messageResponse = "Problemas para obtener las carreras";
         $isOk = FALSE;
         try {
@@ -86,7 +86,7 @@ class EventController {
             if ($eventos) {
                 $arrayEventosFinal = array();
                 for ($i = 0; $i < count($eventos); $i++) {
-                    $event = new \app\data\Event();
+                    $event = new \app\entities\Event();
                     $event->setId($eventos[$i]["id"]);
                     $event->setUser($eventos[$i]["user"]);
                     $event->setName($eventos[$i]["name"]);
@@ -120,7 +120,7 @@ class EventController {
     }
 
     public function deleteEvent($data) {
-        $response = new \app\data\Response();
+        $response = new \app\entities\Response();
         $messageResponse = "Error al intentar borrar la carrera";
         $isOk = FALSE;
         try {
@@ -144,7 +144,7 @@ class EventController {
     }
 
     public function editEvent($args, $data) {
-        $response = new \app\data\Response();
+        $response = new \app\entities\Response();
         $messageResponse = "No se ha podido editar la carrera";
         $isOk = FALSE;
         try {

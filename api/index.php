@@ -19,10 +19,10 @@ spl_autoload_register(function ($classname) {
             $countNameSpacesApp++;
         }
         if ($countNameSpacesApp==1) {
-            $pathname.="/".$classname;
+            $pathname.="\\".$classname;
         }else{
            $countNameSpacesApp=1;
-           $pathname="/".$classname;
+           $pathname="\\".$classname;
         }
     }
     $pathname = $pathname . ".php";

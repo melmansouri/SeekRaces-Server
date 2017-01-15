@@ -11,15 +11,15 @@ class UserController {
     }
 
     public function signIn($data) {
-        $response = new \app\dto\Response();
+        $response = new \app\entities\Response();
         $messageResponse = 'Error al registrarse';
         $isOk = FALSE;
         try {
-            $user = new \app\data\User();
+            $user = new \app\entities\User();
             $user->setEmail($data['email']);
             $user->setPwd($data['pwd']);
             $user->setUsername($data['username']);
-            $user->setPhoto($data['photo']);
+            $user->setPhotoBas64($data['photoBase64']);
             $user->setCountry($data['country']);
             $user->setToken_push($data['token_push']);
 
@@ -51,7 +51,7 @@ class UserController {
         $messageResponse = '<h3>Esta verificacion ya no es válida</h3>';
         try {
             $verification = new \app\controllers\VerificationController($this->connectionDb);
-            $user = new \app\data\User();
+            $user = new \app\entities\User();
 
             $dataUserVerification = $verification->getDataVerificationUser($token);
             if ($dataUserVerification) {
@@ -96,10 +96,10 @@ class UserController {
     }
 
     public function login($data) {
-        $response = new \app\data\Response();
+        $response = new \app\entities\Response();
         $messageResponse = 'Error en el servidor';
         $isOk = FALSE;
-        $user = new \app\data\User();
+        $user = new \app\entities\User();
         try {
             $email = $data['email'];
             $pwd = $data['pwd'];
@@ -134,7 +134,7 @@ class UserController {
     }
 
     public function sendMailToRestorePwd($email) {
-        $response = new \app\data\Response();
+        $response = new \app\entities\Response();
         $messageResponse = 'Problemas para recuperar la contraseña';
         $isOk = FALSE;
         try {

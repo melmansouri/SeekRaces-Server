@@ -1,5 +1,5 @@
 <?php
-namespace app\data;
+namespace app\entities;
 
 class User{
     private $email;
