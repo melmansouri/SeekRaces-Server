@@ -2,6 +2,13 @@
 
 namespace app\common;
 
-define("PATH_PROJECT", dirname(dirname(__DIR__)));
-define("TYPE_PROFILE","profile");
-define("TYPE_EVENTS","events");
+class Constants{
+    
+    /*
+define("FOLDER_PROFILE","profile");
+define("FOLDER_EVENTS","events");*/
+    const FOLDER_PROFILE="profile";
+    const FOLDER_EVENTS="events";
+    
+}
+

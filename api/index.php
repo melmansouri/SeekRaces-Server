@@ -70,13 +70,14 @@ $app->delete('/user/{email}/event/{id}/favorites', 'deleteEventFromFavorites');
 $app->run();
 
 function index() {
-    echo "
+    echo microtime()."
         <h1>SEEKRACES</h1>
     ";
 }
 
 function signIn(Request $request, Response $response){ 
     $data = $request->getParsedBody();
+    print_r($data);
     $userDao=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
     $result=$userDao->signIn($data);
     return json_encode($result->getArray());
