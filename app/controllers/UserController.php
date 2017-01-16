@@ -22,13 +22,14 @@ class UserController {
             $user->setPhotoBas64($data['photoBase64']);
             $user->setCountry($data['country']);
             $user->setToken_push($data['token_push']);
+            print_r($user->getArray());
 
             if ($this->checkExistUser($user->getEmail())) {
                 $messageResponse = "Ya existe un usuario con este correo";
             } else {
                 $verification = new \app\controllers\VerificationController($this->connectionDb);
                 if ($verification->insertSignInUserVerification($user)) {
-                    if ($verification->sendMailVerification($user->getEmail(), $user->getUsername())) {
+                    if (/*$verification->sendMailVerification($user->getEmail(), $user->getUsername())*/TRUE) {
                         $isOk = TRUE;
                         $messageResponse = "Se le ha enviado un correo de confirmación.";
                     } else {
@@ -103,22 +104,25 @@ class UserController {
         try {
             $email = $data['email'];
             $pwd = $data['pwd'];
+            $token_push = $data['token_push'];
 
             if (!$this->checkExistUser($email)) {
                 $messageResponse = "Este usuario no existe.";
             } else {
                 $userFromDb = $this->checkExistUser($email);
-                $messageResponse = "Las credenciales son incorrectas";
-                if ($userFromDb) {
-                    $isOk = TRUE;
+                if ($userFromDb && $this->updatetoken_push($email, $token_push)) {
                     $user->setEmail($email);
                     $pwdhash = $userFromDb->pwd;
+                    $messageResponse = "Las credenciales son incorrectas";
                     if (password_verify($pwd, $pwdhash)) {
+                        $isOk = TRUE;
                         $messageResponse = "Bienvenido";
                         $user->setUsername($userFromDb->username);
-                        $user->setPhoto_url($userFromDb->photo_url);
-                        $user->setPhotoBas64($userFromDb->photoBase64);
-                        $response->setContent($user->getArray());
+                        $filename=$userFromDb->photo_url;
+                        $user->setPhoto_url($filename);
+                        $base64= \app\common\Utils::fileToBase64($filename);
+                        $user->setPhotoBas64($base64);
+                        $response->setContent(json_encode($user->getArray()));
                     }
                 }
             }
@@ -166,6 +170,21 @@ class UserController {
         $dataQuery = array(':email' => $email);
 
         $result = $this->connectionDb->executeQueryWithDataFetch($query, $dataQuery);
+
+        return $result;
+    }
+    
+    private function updatetoken_push($email,$token_push){
+        if (!isset($token_push) && empty($token_push)) {
+            return TRUE;
+        }
+        $query = "UPDATE user SET token_push = :token_push"
+                . " WHERE"
+                . " email=:email";
+
+        $dataQuery = array('email' => $email,
+            'token_push' => $token_push);
+        $result = $this->connectionDb->executeQueryWithData($query, $dataQuery);
 
         return $result;
     }

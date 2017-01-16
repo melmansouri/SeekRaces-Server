@@ -66,7 +66,7 @@ class FavoriteController {
                 }
                 $isOk = TRUE;
                 $messageResponse="";
-                $response->setContent($arrayEventosFinal);
+                $response->setContent(json_encode($arrayEventosFinal));
             }
         } catch (Exception $ex) {
         } catch (\PDOException $pex) {

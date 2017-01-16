@@ -19,10 +19,10 @@ spl_autoload_register(function ($classname) {
             $countNameSpacesApp++;
         }
         if ($countNameSpacesApp==1) {
-            $pathname.="\\".$classname;
+            $pathname.="/".$classname;
         }else{
            $countNameSpacesApp=1;
-           $pathname="\\".$classname;
+           $pathname="/".$classname;
         }
     }
     $pathname = $pathname . ".php";
@@ -70,14 +70,13 @@ $app->delete('/user/{email}/event/{id}/favorites', 'deleteEventFromFavorites');
 $app->run();
 
 function index() {
-    echo microtime()."
+    echo "
         <h1>SEEKRACES</h1>
     ";
 }
 
 function signIn(Request $request, Response $response){ 
     $data = $request->getParsedBody();
-    print_r($data);
     $userDao=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
     $result=$userDao->signIn($data);
     return json_encode($result->getArray());

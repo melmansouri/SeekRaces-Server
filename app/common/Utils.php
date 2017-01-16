@@ -29,17 +29,31 @@ class Utils {
     public static function base64ToFile($base64, $type, $name) {
         $filepath = "";
         try {
-            $root_path_project = dirname(dirname(__DIR__)) . "\\pictures" . "\\".$type . "\\";
+            $root_path_project = dirname(dirname(__DIR__)) . "/pictures" . "/" . $type . "/";
             self::createDirectory($root_path_project);
             $data = base64_decode($base64);
 
-            $filepath = $type . "\\" . $name . ".png";
+            $filepath = $type . "/" . $name . ".png";
 
             file_put_contents($root_path_project . $name . ".png", $data);
         } catch (Exception $ex) {
             throw $ex;
         }
         return $filepath;
+    }
+
+    public static function fileToBase64($filename) {
+        $base64 = "";
+        try {
+            if (!isset($filename) && !empty($filename)) {
+                $root_path_project = dirname(dirname(__DIR__)) . "/pictures" . "/" . $filename;
+                $data = file_get_contents($root_path_project);
+                $base64 = base64_encode($data);
+            }
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+        return $base64;
     }
 
     public static function createDirectory($path) {

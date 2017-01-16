@@ -104,7 +104,7 @@ class EventController {
                 }
                 $isOk = TRUE;
                 $messageResponse = "";
-                $response->setContent($arrayEventosFinal);
+                $response->setContent(json_encode($arrayEventosFinal));
             }
         } catch (Exception $ex) {
             

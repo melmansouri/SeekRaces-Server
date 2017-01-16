@@ -64,7 +64,7 @@ class OpinionController {
                 }
                 $isOk = TRUE;
                 $messageResponse = "";
-                $response->setContent($arrayEventVotesFinal);
+                $response->setContent(json_encode($arrayEventVotesFinal));
             } else if (count($eventVotes) == 0) {
                 $messageResponse = "No hay opiniones registradas para esta carrera";
             }
