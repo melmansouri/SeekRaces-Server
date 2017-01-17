@@ -20,7 +20,7 @@ class EventController {
                     . " (:user, :name, :description, :image,:distance,:country,:city,:date_time_init,:web)";
             $image = "";
             if (!empty($data["image"]) && isset($data["image"])) {
-                $file_path_photo = \app\common\Utils::base64ToFile($data["image"], \app\common\Constants::FOLDER_EVENTS, \app\common\Utils::getCurrentMilliseconds());
+                $file_path_photo = \app\common\Utils::base64ToFile($data["image"],\app\common\Utils::getCurrentMilliseconds());
                 $image=$file_path_photo;
             }
 

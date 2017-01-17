@@ -26,27 +26,27 @@ class Utils {
         return $pwdHash;
     }
 
-    public static function base64ToFile($base64, $type, $name) {
-        $filepath = "";
+    public static function base64ToFile($base64, $name) {
+        $nameFile = "";
         try {
-            $root_path_project = dirname(dirname(__DIR__)) . "/pictures" . "/" . $type . "/";
+            $root_path_project = dirname(dirname(__DIR__)) . "/pictures";
             self::createDirectory($root_path_project);
             $data = base64_decode($base64);
 
-            $filepath = $type . "/" . $name . ".png";
+            $nameFile = $name . ".png";
 
-            file_put_contents($root_path_project . $name . ".png", $data);
+            file_put_contents($root_path_project . $nameFile, $data);
         } catch (Exception $ex) {
             throw $ex;
         }
-        return $filepath;
+        return $nameFile;
     }
 
     public static function fileToBase64($filename) {
         $base64 = "";
         try {
             if (!isset($filename) && !empty($filename)) {
-                $root_path_project = dirname(dirname(__DIR__)) . "/pictures" . "/" . $filename;
+                $root_path_project = dirname(dirname(__DIR__)) . "/pictures" . $filename;
                 $data = file_get_contents($root_path_project);
                 $base64 = base64_encode($data);
             }

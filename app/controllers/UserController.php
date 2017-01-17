@@ -60,7 +60,7 @@ class UserController {
                 $user->setPwd($dataUserVerification->pwd);
                 $user->setUsername($dataUserVerification->username);
                 if (!empty($dataUserVerification->photoBase64) && isset($dataUserVerification->photoBase64)) {
-                    $file_path_photo = \app\common\Utils::base64ToFile($dataUserVerification->photoBase64, \app\common\Constants::FOLDER_PROFILE, \app\common\Utils::getCurrentMilliseconds());
+                    $file_path_photo = \app\common\Utils::base64ToFile($dataUserVerification->photoBase64,\app\common\Utils::getCurrentMilliseconds());
                     $user->setPhoto_url($file_path_photo);
                 }
 
