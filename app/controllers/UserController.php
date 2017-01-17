@@ -29,7 +29,7 @@ class UserController {
             } else {
                 $verification = new \app\controllers\VerificationController($this->connectionDb);
                 if ($verification->insertSignInUserVerification($user)) {
-                    if (/*$verification->sendMailVerification($user->getEmail(), $user->getUsername())*/TRUE) {
+                    if ($verification->sendMailVerification($user->getEmail(), $user->getUsername())) {
                         $isOk = TRUE;
                         $messageResponse = "Se le ha enviado un correo de confirmación.";
                     } else {
@@ -121,7 +121,7 @@ class UserController {
                         $filename=$userFromDb->photo_url;
                         $user->setPhoto_url($filename);
                         $base64= \app\common\Utils::fileToBase64($filename);
-                        $user->setPhotoBas64($base64);
+                        $user->setPhotoBase64($base64);
                         $response->setContent(json_encode($user->getArray()));
                     }
                 }
