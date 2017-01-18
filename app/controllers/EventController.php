@@ -18,16 +18,16 @@ class EventController {
             $query = "INSERT INTO event(user, name, description, image,distance,country,city,date_time_init,web)"
                     . " VALUES"
                     . " (:user, :name, :description, :image,:distance,:country,:city,:date_time_init,:web)";
-            $image = "";
-            if (!empty($data["image"]) && isset($data["image"])) {
-                $file_path_photo = \app\common\Utils::base64ToFile($data["image"],\app\common\Utils::getCurrentMilliseconds());
-                $image=$file_path_photo;
+            $imageName = "";
+            if (isset($data["imageBase64"]) && !empty($data["imageBase64"])) {
+                $file_path_photo = \app\common\Utils::base64ToFile($data["imageBase64"],\app\common\Utils::getCurrentMilliseconds());
+                $imageName=$file_path_photo;
             }
 
             $dataQuery = array("user" => $data["user"],
                 "name" => $data["name"],
                 "description" => $data["description"],
-                "image" => $image,
+                "image" => $imageName,
                 "distance" => $data["distance"],
                 "country" => $data["country"],
                 "city" => $data["city"],
@@ -91,7 +91,9 @@ class EventController {
                     $event->setUser($eventos[$i]["user"]);
                     $event->setName($eventos[$i]["name"]);
                     $event->setDescription($eventos[$i]["description"]);
-                    $event->setImage($eventos[$i]["image"]);
+                    $imageName=$eventos[$i]["image"];
+                    $base64= \app\common\Utils::fileToBase64($imageName);
+                    $event->setImageBase64($base64);
                     $event->setDistance($eventos[$i]["distance"]);
                     $event->setCountry($eventos[$i]["country"]);
                     $event->setCity($eventos[$i]["city"]);
@@ -151,12 +153,17 @@ class EventController {
             $query = "UPDATE event SET name = :name, description = :description, image = :image, distance = :distance, country = :country, city = :city, date_time_init = :date_time_init, web = :web"
                     . " WHERE "
                     . "user = :user AND id = :id";
+            $imageName = "";
+            if (isset($data["imageBase64"]) && !empty($data["imageBase64"])) {
+                $file_path_photo = \app\common\Utils::base64ToFile($data["imageBase64"],\app\common\Utils::getCurrentMilliseconds());
+                $imageName=$file_path_photo;
+            }
             $dataQuery = array(
                 "user" => $data["user"],
                 "id" => $args["id"],
                 "name" => $data["name"],
                 "description" => $data["description"],
-                "image" => $data["image"],
+                "image" => $imageName,
                 "distance" => $data["distance"],
                 "country" => $data["country"],
                 "city" => $data["city"],

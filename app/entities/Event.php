@@ -7,7 +7,7 @@ class Event{
     private $user;
     private $name;
     private $description;
-    private $image;
+    private $imageBase64;
     private $distance;
     private $country;
     private $city;
@@ -21,118 +21,118 @@ class Event{
         
     }
 
-    function getId() {
+    public function getId() {
         return $this->id;
     }
 
-    function getUser() {
+    public function getUser() {
         return $this->user;
     }
 
-    function getName() {
+    public function getName() {
         return $this->name;
     }
 
-    function getDescription() {
+    public function getDescription() {
         return $this->description;
     }
 
-    function getImage() {
-        return $this->image;
+    public function getImageBase64() {
+        return $this->imageBase64;
     }
 
-    function getDistance() {
+    public function getDistance() {
         return $this->distance;
     }
 
-    function getCountry() {
+    public function getCountry() {
         return $this->country;
     }
 
-    function getCity() {
+    public function getCity() {
         return $this->city;
     }
 
-    function getDate_time_init() {
+    public function getDate_time_init() {
         return $this->date_time_init;
     }
 
-    function getWeb() {
+    public function getWeb() {
         return $this->web;
     }
 
-    function getNum_reviews() {
+    public function getNum_reviews() {
         return $this->num_reviews;
     }
 
-    function getTotal_scores() {
+    public function getTotal_scores() {
         return $this->total_scores;
     }
 
-    function getRating() {
+    public function getRating() {
         return $this->rating;
     }
 
-    function setId($id) {
+    public function setId($id) {
         $this->id = $id;
     }
 
-    function setUser($user) {
+    public function setUser($user) {
         $this->user = $user;
     }
 
-    function setName($name) {
+    public function setName($name) {
         $this->name = $name;
     }
 
-    function setDescription($description) {
+    public function setDescription($description) {
         $this->description = $description;
     }
 
-    function setImage($image) {
-        $this->image = $image;
+    public function setImageBase64($imageBase64) {
+        $this->imageBase64 = $imageBase64;
     }
 
-    function setDistance($distance) {
+    public function setDistance($distance) {
         $this->distance = $distance;
     }
 
-    function setCountry($country) {
+    public function setCountry($country) {
         $this->country = $country;
     }
 
-    function setCity($city) {
+    public function setCity($city) {
         $this->city = $city;
     }
 
-    function setDate_time_init($date_time_init) {
+    public function setDate_time_init($date_time_init) {
         $this->date_time_init = $date_time_init;
     }
 
-    function setWeb($web) {
+    public function setWeb($web) {
         $this->web = $web;
     }
 
-    function setNum_reviews($num_reviews) {
+    public function setNum_reviews($num_reviews) {
         $this->num_reviews = $num_reviews;
     }
 
-    function setTotal_scores($total_scores) {
+    public function setTotal_scores($total_scores) {
         $this->total_scores = $total_scores;
     }
 
-    function setRating($rating) {
+    public function setRating($rating) {
         $this->rating = $rating;
     }
 
-        
+            
     public function getArray(){
         return array(
             "id"=> $this->id,
             "user"=> $this->user,
             "name"=> $this->name,
             "description"=> $this->description,
-            "image"=> $this->image,
+            "imageBase64"=> $this->imageBase64,
             "distance"=> $this->distance,
             "country"=> $this->country,
             "city"=> $this->city,
