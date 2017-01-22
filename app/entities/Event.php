@@ -5,6 +5,7 @@ class Event{
  
     private $id;
     private $user;
+    private $userName;
     private $name;
     private $description;
     private $imageBase64;
@@ -16,17 +17,22 @@ class Event{
     private $num_reviews;
     private $total_scores;
     private $rating;
+    private $isFavorite;
     
     public function __construct() {
         
     }
-
+    
     public function getId() {
         return $this->id;
     }
 
     public function getUser() {
         return $this->user;
+    }
+
+    public function getUserName() {
+        return $this->userName;
     }
 
     public function getName() {
@@ -73,12 +79,20 @@ class Event{
         return $this->rating;
     }
 
+    public function getIsFavorite() {
+        return $this->isFavorite;
+    }
+
     public function setId($id) {
         $this->id = $id;
     }
 
     public function setUser($user) {
         $this->user = $user;
+    }
+
+    public function setUserName($userName) {
+        $this->userName = $userName;
     }
 
     public function setName($name) {
@@ -125,11 +139,15 @@ class Event{
         $this->rating = $rating;
     }
 
+    public function setIsFavorite($isFavorite) {
+        $this->isFavorite = $isFavorite;
+    }
             
     public function getArray(){
         return array(
             "id"=> $this->id,
             "user"=> $this->user,
+            "userName"=> $this->userName,
             "name"=> $this->name,
             "description"=> $this->description,
             "imageBase64"=> $this->imageBase64,
@@ -140,6 +158,7 @@ class Event{
             "web"=> $this->web,
             "num_reviews"=> $this->num_reviews,
             "total_scores"=> $this->total_scores,
-            "rating"=> $this->rating);
+            "rating"=> $this->rating,
+            "isFavorite"=> $this->isFavorite);
     }
 }

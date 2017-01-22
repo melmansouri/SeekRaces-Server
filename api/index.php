@@ -47,7 +47,7 @@ $app->post('/user/login', 'login');
 
 $app->post('/user/restPwd', 'restPwd');*/
 
-$app->get('/event', 'getEvent');
+$app->get('/event', 'getEvents');
 
 $app->post('/event', 'addNewEvent');
 
@@ -111,10 +111,11 @@ function addNewEvent(Request $request, Response $response){
     return json_encode($result->getArray());
 }
 
-function getEvent(Request $request, Response $response) {
-    $data =$request->getQueryParams();
+function getEvents(Request $request, Response $response) {
+    //$data =$request->getQueryParams();
+    $data = $request->getParsedBody();
     $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->getEvent($data);
+    $result=$eventDao->getEvents($data);
     return json_encode($result->getArray());
 }
 

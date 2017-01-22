@@ -50,13 +50,16 @@ class EventController {
         return $response;
     }
 
-    public function getEvent($data) {
+    public function getEvents($data) {
         $response = new \app\entities\Response();
         $messageResponse = "Problemas para obtener las carreras";
         $isOk = FALSE;
         try {
-            $query = "SELECT * FROM event WHERE country like :country and city like :city";
-            $dataQuery = array("country" => "%%",
+            $columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.country,e.city,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating, "
+                    . "(select if(f.event is null,false,true) from favorite f where f.event=e.id and f.user like :user) as favorite";
+            $query = "SELECT ".$columnsResultQuery ." FROM event inner join user WHERE user <> :user and country like :country and city like :city";
+            $dataQuery = array("user" => $data["country"],
+                "country" => "%%",
                 "city" => "%%");
 
             if (array_key_exists("country", $data)) {
@@ -89,6 +92,7 @@ class EventController {
                     $event = new \app\entities\Event();
                     $event->setId($eventos[$i]["id"]);
                     $event->setUser($eventos[$i]["user"]);
+                    $event->setUserName($eventos[$i]["username"]);
                     $event->setName($eventos[$i]["name"]);
                     $event->setDescription($eventos[$i]["description"]);
                     $imageName=$eventos[$i]["image"];
@@ -102,6 +106,7 @@ class EventController {
                     $event->setNum_reviews($eventos[$i]["num_reviews"]);
                     $event->setTotal_scores($eventos[$i]["total_scores"]);
                     $event->setRating($eventos[$i]["rating"]);
+                    $event->setIsFavorite($eventos[$i]["favorite"]);
                     array_push($arrayEventosFinal, $event->getArray());
                 }
                 $isOk = TRUE;
