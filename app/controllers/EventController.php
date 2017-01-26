@@ -57,10 +57,11 @@ class EventController {
         try {
             $columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.country,e.city,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating, "
                     . "(select if(f.event is null,false,true) from favorite f where f.event=e.id and f.user like :user) as favorite";
-            $query = "SELECT ".$columnsResultQuery ." FROM event inner join user WHERE user <> :user and country like :country and city like :city";
-            $dataQuery = array("user" => $data["country"],
+            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE user <> :user and e.country like :country and e.city like :city";
+            $dataQuery = array("user" => $data["user"],
                 "country" => "%%",
                 "city" => "%%");
+            
 
             if (array_key_exists("country", $data)) {
                 $dataQuery["country"] = "%" . $data["country"] . "%";
@@ -71,19 +72,18 @@ class EventController {
             }
 
             if (array_key_exists("distance", $data)) {
-                $query .= " AND distance = :distance";
+                $query .= " AND e.distance = :distance";
                 $dataQuery["distance"] = $data["distance"];
             }
 
             if (array_key_exists("date_interval_init", $data) && !array_key_exists("date_interval_end", $data)) {
-                $query .= " AND date__time_init < :date_interval_init";
+                $query .= " AND e.date__time_init < :date_interval_init";
                 $dataQuery["date_interval_init"] = $data["date_interval_init"];
             } else if (array_key_exists("date_interval_init", $data) && array_key_exists("date_interval_end", $data)) {
-                $query .= " AND date__time_init between :date_interval_init AND date_interval_end";
+                $query .= " AND e.date__time_init between :date_interval_init AND :date_interval_end";
                 $dataQuery["date_interval_init"] = $data["date_interval_init"];
                 $dataQuery["date_interval_end"] = $data["date_interval_end"];
             }
-
             $eventos = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
 
             if ($eventos) {
@@ -112,6 +112,8 @@ class EventController {
                 $isOk = TRUE;
                 $messageResponse = "";
                 $response->setContent(json_encode($arrayEventosFinal));
+            }else{
+                $messageResponse="No hay carreras";
             }
         } catch (Exception $ex) {
             

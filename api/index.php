@@ -112,8 +112,8 @@ function addNewEvent(Request $request, Response $response){
 }
 
 function getEvents(Request $request, Response $response) {
-    //$data =$request->getQueryParams();
-    $data = $request->getParsedBody();
+    $data =$request->getQueryParams();
+    //$data = $request->getParsedBody();
     $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
     $result=$eventDao->getEvents($data);
     return json_encode($result->getArray());
