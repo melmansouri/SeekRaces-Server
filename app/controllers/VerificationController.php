@@ -25,7 +25,7 @@ class VerificationController {
             $dataQuery = array('email' => $user->getEmail(),
                 'pwd' => \app\common\Utils::cifrarBCrypt($user->getPwd()),
                 'username' => $user->getUsername(),
-                'photoBase64' => $user->getPhotoBas64(),
+                'photoBase64' => $user->getPhotoBase64(),
                 'token_push'=>$user->getToken_push(),
                 'token_verification' => $this->token_verification,
                 'creation_datetime' => $creation_dateTime);

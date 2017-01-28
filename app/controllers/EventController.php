@@ -57,7 +57,7 @@ class EventController {
         try {
             $columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.country,e.city,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating, "
                     . "(select if(f.event is null,false,true) from favorite f where f.event=e.id and f.user like :user) as favorite";
-            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE user <> :user and e.country like :country and e.city like :city";
+            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE user <> :user and e.date_time_init > NOW() and e.country like :country and e.city like :city";
             $dataQuery = array("user" => $data["user"],
                 "country" => "%%",
                 "city" => "%%");

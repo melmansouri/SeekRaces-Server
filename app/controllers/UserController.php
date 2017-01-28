@@ -19,10 +19,9 @@ class UserController {
             $user->setEmail($data['email']);
             $user->setPwd($data['pwd']);
             $user->setUsername($data['username']);
-            $user->setPhotoBas64($data['photoBase64']);
+            $user->setPhotoBase64($data['photoBase64']);
             $user->setCountry($data['country']);
             $user->setToken_push($data['token_push']);
-            print_r($user->getArray());
 
             if ($this->checkExistUser($user->getEmail())) {
                 $messageResponse = "Ya existe un usuario con este correo";
@@ -120,8 +119,8 @@ class UserController {
                         $user->setUsername($userFromDb->username);
                         $filename=$userFromDb->photo_url;
                         $user->setPhoto_url($filename);
-                        $base64= \app\common\Utils::fileToBase64($filename);
-                        $user->setPhotoBase64($base64);
+                        //$base64= \app\common\Utils::fileToBase64($filename);
+                        //$user->setPhotoBase64($base64);
                         $response->setContent(json_encode($user->getArray()));
                     }
                 }
