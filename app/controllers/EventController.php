@@ -52,12 +52,12 @@ class EventController {
 
     public function getEvents($data) {
         $response = new \app\entities\Response();
-        $messageResponse = "Problemas para obtener las carreras";
+        $messageResponse = "Problemas para obtener las carreras. Intentalo más tarde";
         $isOk = FALSE;
         try {
             $columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.country,e.city,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating, "
                     . "(select if(f.event is null,false,true) from favorite f where f.event=e.id and f.user like :user) as favorite";
-            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE user <> :user and e.country like :country and e.city like :city";
+            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE e.user <> :user and e.country like :country and e.city like :city";
             $dataQuery = array("user" => $data["user"],
                 "country" => "%%",
                 "city" => "%%");
@@ -78,15 +78,16 @@ class EventController {
             }
 
             if (array_key_exists("date_interval_init", $data) && !array_key_exists("date_interval_end", $data)) {
-                $query .= " AND e.date_time_init < :date_interval_init";
+                $query .= " AND e.date_time_init > :date_interval_init";
                 $dataQuery["date_interval_init"] = $data["date_interval_init"];
             } else if (array_key_exists("date_interval_init", $data) && array_key_exists("date_interval_end", $data)) {
                 $query .= " AND e.date_time_init between :date_interval_init AND :date_interval_end";
                 $dataQuery["date_interval_init"] = $data["date_interval_init"];
                 $dataQuery["date_interval_end"] = $data["date_interval_end"];
-            }else{
+            }else if(!array_key_exists("date_interval_init", $data) && !array_key_exists("date_interval_end", $data)){
                 $query.=" AND e.date_time_init > NOW()";
             }
+            echo $query;
             $eventos = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
 
             if ($eventos) {
@@ -116,7 +117,7 @@ class EventController {
                 $messageResponse = "";
                 $response->setContent(json_encode($arrayEventosFinal));
             }else{
-                $messageResponse="No hay carreras";
+                $messageResponse="No hay carreras. Intentalo más tarde o cambia el fitro de búsqueda";
             }
         } catch (Exception $ex) {
             
@@ -125,6 +126,55 @@ class EventController {
         }
 
 
+        $response->setIsOk($isOk);
+        $response->setMessage($messageResponse);
+
+        return $response;
+    }
+    
+    public function getOwnEvents($data) {
+        $response = new \app\entities\Response();
+        $messageResponse = "Problemas para obtener tus carreras. Intentalo más tarde";
+        $isOk = FALSE;
+        try {
+            $columnsResultQuery="e.id,e.user,e.name,e.description,e.image,e.distance,e.country,e.city,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating";
+            $query = "SELECT ".$columnsResultQuery ." FROM event e WHERE e.user = :user";
+            $dataQuery = array("user" => $data["email"]);
+            $eventos = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
+
+            if ($eventos) {
+                $arrayEventosFinal = array();
+                for ($i = 0; $i < count($eventos); $i++) {
+                    $event = new \app\entities\Event();
+                    $event->setId($eventos[$i]["id"]);
+                    $event->setUser($eventos[$i]["user"]);
+                    $event->setUserName("Mi");
+                    $event->setName($eventos[$i]["name"]);
+                    $event->setDescription($eventos[$i]["description"]);
+                    $imageName=$eventos[$i]["image"];
+                    $base64= \app\common\Utils::fileToBase64($imageName);
+                    $event->setImageBase64($base64);
+                    $event->setDistance($eventos[$i]["distance"]);
+                    $event->setCountry($eventos[$i]["country"]);
+                    $event->setCity($eventos[$i]["city"]);
+                    $event->setDate_time_init($eventos[$i]["date_time_init"]);
+                    $event->setWeb($eventos[$i]["web"]);
+                    $event->setNum_reviews($eventos[$i]["num_reviews"]);
+                    $event->setTotal_scores($eventos[$i]["total_scores"]);
+                    $event->setRating($eventos[$i]["rating"]);
+                    array_push($arrayEventosFinal, $event->getArray());
+                }
+                $isOk = TRUE;
+                $messageResponse = "";
+                $response->setContent(json_encode($arrayEventosFinal));
+            }else{
+                $messageResponse="No tienes carreras publicadas.";
+            }
+        } catch (Exception $ex) {
+            
+        } catch (\PDOException $pex) {
+            
+        }
         $response->setIsOk($isOk);
         $response->setMessage($messageResponse);
 

@@ -49,6 +49,8 @@ $app->post('/user/restPwd', 'restPwd');*/
 
 $app->get('/event', 'getEvents');
 
+$app->get('/user/{email}/event', 'getOwnEvents');
+
 $app->post('/event', 'addNewEvent');
 
 $app->delete('/event/{id}', 'deleteEvent');
@@ -116,6 +118,12 @@ function getEvents(Request $request, Response $response) {
     //$data = $request->getParsedBody();
     $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
     $result=$eventDao->getEvents($data);
+    return json_encode($result->getArray());
+}
+
+function getOwnEvents(Request $request, Response $response,$args) {
+    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
+    $result=$eventDao->getOwnEvents($args);
     return json_encode($result->getArray());
 }
 
