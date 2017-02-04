@@ -57,7 +57,7 @@ class EventController {
         try {
             $columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.country,e.city,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating, "
                     . "(select if(f.event is null,false,true) from favorite f where f.event=e.id and f.user like :user) as favorite";
-            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE user <> :user and e.date_time_init > NOW() and e.country like :country and e.city like :city";
+            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE user <> :user and e.country like :country and e.city like :city";
             $dataQuery = array("user" => $data["user"],
                 "country" => "%%",
                 "city" => "%%");
@@ -71,18 +71,21 @@ class EventController {
                 $dataQuery["city"] = "%" . $data["city"] . "%";
             }
 
-            if (array_key_exists("distance", $data)) {
+            //if (array_key_exists("distance", $data)) {
+            if ($data["distance"]!=0) {
                 $query .= " AND e.distance = :distance";
                 $dataQuery["distance"] = $data["distance"];
             }
 
             if (array_key_exists("date_interval_init", $data) && !array_key_exists("date_interval_end", $data)) {
-                $query .= " AND e.date__time_init < :date_interval_init";
+                $query .= " AND e.date_time_init < :date_interval_init";
                 $dataQuery["date_interval_init"] = $data["date_interval_init"];
             } else if (array_key_exists("date_interval_init", $data) && array_key_exists("date_interval_end", $data)) {
-                $query .= " AND e.date__time_init between :date_interval_init AND :date_interval_end";
+                $query .= " AND e.date_time_init between :date_interval_init AND :date_interval_end";
                 $dataQuery["date_interval_init"] = $data["date_interval_init"];
                 $dataQuery["date_interval_end"] = $data["date_interval_end"];
+            }else{
+                $query.=" AND e.date_time_init > NOW()";
             }
             $eventos = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
 
