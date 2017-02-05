@@ -12,7 +12,7 @@ class EventController {
 
     public function addNewEvent($data) {
         $response = new \app\entities\Response();
-        $messageResponse = "Error al añadir la carrera";
+        $messageResponse = "Error al añadir la carrera. Intentalo más tarde";
         $isOk = FALSE;
         try {
             $query = "INSERT INTO event(user, name, description, image,distance,country,city,date_time_init,web)"
@@ -35,7 +35,7 @@ class EventController {
                 "web" => $data["web"]);
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                 $isOk = TRUE;
-                $messageResponse = "Nueva carrera añadida";
+                $messageResponse = "Carrera añadida";
             }
         } catch (Exception $ex) {
             
