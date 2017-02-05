@@ -79,103 +79,102 @@ function index() {
 
 function signIn(Request $request, Response $response){ 
     $data = $request->getParsedBody();
-    $userDao=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
-    $result=$userDao->signIn($data);
+    $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
+    $result=$userController->signIn($data);
     return json_encode($result->getArray());
 }
 
 function verificationSignIn(Request $request, Response $response){
     $array=$request->getQueryParams();
     $token=$array["token"];
-    $userDao=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
-    $result=$userDao->verificationSignIn($token);
+    $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
+    $result=$userController->verificationSignIn($token);
     return $result;
 }
 
 function login(Request $request, Response $response){
     $data = $request->getParsedBody();
-    $userDao=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
-    $result=$userDao->login($data);
+    $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
+    $result=$userController->login($data);
     return json_encode($result->getArray());
 }
 
 /*function forgotPwd(Request $request, Response $response,$args){
     $email = $args['email'];
-    $userDao=new app\dao\UserDao(app\connection\ConnectionPDO::getInstance());
-    $result=$userDao->sendMailToRestorePwd($email);
+    $userController=new app\Controller\UserController(app\connection\ConnectionPDO::getInstance());
+    $result=$userController->sendMailToRestorePwd($email);
     return json_encode($result->getArray());
 }*/
 
 function addNewEvent(Request $request, Response $response){
     $data = $request->getParsedBody();
-    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->addNewEvent($data);
+    $eventController=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
+    $result=$eventController->addNewEvent($data);
     return json_encode($result->getArray());
 }
 
 function getEvents(Request $request, Response $response) {
     $data =$request->getQueryParams();
     //$data = $request->getParsedBody();
-    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->getEvents($data);
+    $eventController=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
+    $result=$eventController->getEvents($data);
     return json_encode($result->getArray());
 }
 
 function getOwnEvents(Request $request, Response $response,$args) {
-    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->getOwnEvents($args);
+    $eventController=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
+    $result=$eventController->getOwnEvents($args);
     return json_encode($result->getArray());
 }
 
 function editEvent(Request $request, Response $response,$args) {
     $data = $request->getParsedBody();
-    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->editEvent($args,$data);
+    $eventController=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
+    $result=$eventController->editEvent($args,$data);
     return json_encode($result->getArray());
 }
 
 function deleteEvent(Request $request, Response $response,$args) {
-    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->deleteEvent($args);
+    $eventController=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
+    $result=$eventController->deleteEvent($args);
     return json_encode($result->getArray());
 }
 
 function addNewOpinionEvent(Request $request, Response $response,$args) {
     $data = $request->getParsedBody();
-    $opinionDao=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
-    $result=$opinionDao->addNewOpinionEvent($args,$data);
+    $opinionController=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
+    $result=$opinionController->addNewOpinionEvent($args,$data);
     return json_encode($result->getArray());
 }
 
 function getEventReviews(Request $request, Response $response,$args) {
-    $opinionDao=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
-    $result=$opinionDao->getEventReviews($args);
+    $opinionController=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
+    $result=$opinionController->getEventReviews($args);
     return json_encode($result->getArray());
 }
 
 function editEventOpinion(Request $request, Response $response,$args) {
     $data = $request->getParsedBody();
-    $eventDao=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->updateOpinion($args,$data);
+    $eventController=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
+    $result=$eventController->updateOpinion($args,$data);
     return json_encode($result->getArray());
 }
 
 function addEventToFavorite(Request $request, Response $response){
     $data = $request->getParsedBody();
-    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->addNewEvent($data);
+    $favoriteController=new app\controllers\FavoriteController(app\connection\ConnectionPDO::getInstance());
+    $result=$favoriteController->addEventToFavorite($data);
     return json_encode($result->getArray());
 }
 
-function getEventsFavorites(Request $request, Response $response) {
-    $data =$request->getQueryParams();
-    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->getEvent($data);
+function getEventsFavorites(Request $request, Response $response,$args) {
+    $favoriteController=new app\controllers\FavoriteController(app\connection\ConnectionPDO::getInstance());
+    $result=$favoriteController->getEventsFavorites($args);
     return json_encode($result->getArray());
 }
 
 function deleteEventFromFavorites(Request $request, Response $response,$args) {
-    $eventDao=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventDao->deleteEvent($args);
+    $favoriteController=new app\controllers\FavoriteController(app\connection\ConnectionPDO::getInstance());
+    $result=$favoriteController->deleteEventFromFavorites($args);
     return json_encode($result->getArray());
 }

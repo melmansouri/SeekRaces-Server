@@ -39,8 +39,8 @@ class FavoriteController {
         $response = new \app\entities\Response();
         $messageResponse = "error al obtener las carreras favoritas";
         $isOk = FALSE;
-        try {
-            $query = "SELECT * FROM favorite as f inner join event as e on f.event = e.id WHERE f.user=:email";
+        try {$columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.country,e.city,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating";
+            $query = "SELECT ".$columnsResultQuery." FROM favorite as f inner join event as e inner join user as u on f.event = e.id and e.user = u.email WHERE f.user= :user";
             $dataQuery = array("user" => $data["email"]);
             
             $eventos=$this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
@@ -51,22 +51,28 @@ class FavoriteController {
                     $event=new \app\entities\Event();
                     $event->setId($eventos[$i]["id"]);
                     $event->setUser($eventos[$i]["user"]);
+                    $event->setUserName($eventos[$i]["username"]);
                     $event->setName($eventos[$i]["name"]);
                     $event->setDescription($eventos[$i]["description"]);
-                    $event->setImage($eventos[$i]["image"]);
+                    $imageName=$eventos[$i]["image"];
+                    $base64= \app\common\Utils::fileToBase64($imageName);
+                    $event->setImageBase64($base64);
                     $event->setDistance($eventos[$i]["distance"]);
                     $event->setCountry($eventos[$i]["country"]);
                     $event->setCity($eventos[$i]["city"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
-                    $event->setNum_votes($eventos[$i]["num_votes"]);
+                    $event->setNum_reviews($eventos[$i]["num_reviews"]);
                     $event->setTotal_scores($eventos[$i]["total_scores"]);
                     $event->setRating($eventos[$i]["rating"]);
+                    $event->setIsFavorite(1);
                     array_push($arrayEventosFinal, $event->getArray());
                 }
                 $isOk = TRUE;
                 $messageResponse="";
                 $response->setContent(json_encode($arrayEventosFinal));
+            }else{
+                $messageResponse="No tienes carreras favoritas.";
             }
         } catch (Exception $ex) {
         } catch (\PDOException $pex) {
