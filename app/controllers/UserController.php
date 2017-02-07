@@ -122,6 +122,9 @@ class UserController {
                         //$base64= \app\common\Utils::fileToBase64($filename);
                         //$user->setPhotoBase64($base64);
                         $response->setContent(json_encode($user->getArray()));
+                        $countryCityController= new \app\controllers\CountryCityController($this->connectionDb);
+                        $response->setCity($countryCityController->getCities());
+                        $response->setCountry($countryCityController->getCountries());
                     }
                 }
             }
