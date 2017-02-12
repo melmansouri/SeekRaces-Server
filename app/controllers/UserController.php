@@ -59,7 +59,7 @@ class UserController {
                 $user->setPwd($dataUserVerification->pwd);
                 $user->setUsername($dataUserVerification->username);
                 if (!empty($dataUserVerification->photoBase64) && isset($dataUserVerification->photoBase64)) {
-                    $file_path_photo = \app\common\Utils::base64ToFile($dataUserVerification->photoBase64,\app\common\Utils::getCurrentMilliseconds());
+                    $file_path_photo = \app\common\Utils::base64ToFile($dataUserVerification->photoBase64, \app\common\Utils::getCurrentMilliseconds());
                     $user->setPhoto_url($file_path_photo);
                 }
 
@@ -117,7 +117,7 @@ class UserController {
                         $isOk = TRUE;
                         $messageResponse = "Bienvenido";
                         $user->setUsername($userFromDb->username);
-                        $filename=$userFromDb->photo_url;
+                        $filename = $userFromDb->photo_url;
                         $user->setPhoto_url($filename);
                         //$base64= \app\common\Utils::fileToBase64($filename);
                         //$user->setPhotoBase64($base64);
@@ -163,33 +163,33 @@ class UserController {
         $response->setIsOk($isOk);
         return $response;
     }
-    
-    public function editUser($data) {
+
+    public function editUser( $data) {
         $response = new \app\entities\Response();
         $messageResponse = "No se ha podido editar tu perfil";
         $isOk = FALSE;
         try {
-            $query = "UPDATE user SET name = :name, description = :description, image = :image, distance = :distance, place = :place, date_time_init = :date_time_init, web = :web"
-                    . " WHERE "
-                    . "user = :user AND id = :id";
-            $imageName = "";
-            if (isset($data["imageBase64"]) && !empty($data["imageBase64"])) {
-                $file_path_photo = \app\common\Utils::base64ToFile($data["imageBase64"],\app\common\Utils::getCurrentMilliseconds());
-                $imageName=$file_path_photo;
-            }
+            $updateQuery = "UPDATE user SET username = :username";
+            $whereQuery = " WHERE "
+                    . "email = :email";
+
             $dataQuery = array(
-                "user" => $data["user"],
-                "id" => $args["id"],
-                "name" => $data["name"],
-                "description" => $data["description"],
-                "image" => $imageName,
-                "distance" => $data["distance"],
-                "place" => $data["place"],
-                "date_time_init" => $data["date_time_init"],
-                "web" => $data["web"]);
+                "email" => $data["email"],
+                "username" => $data["username"]);
+
+            $imageName = "";
+            if (isset($data["photoBase64"]) && !empty($data["photoBase64"])) {
+                $file_path_photo = \app\common\Utils::base64ToFile($data["photoBase64"], $data["photo_url"]);
+                $imageName = $file_path_photo;
+                $updateQuery .= ", photo_url = :photo_url";
+                $dataQuery["photo_url"]= $imageName;
+            }
+            $query=$updateQuery.$whereQuery;
+
+
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                 $isOk = TRUE;
-                $messageResponse = "Éxito al editar la carrera";
+                $messageResponse = "Tu perfil ha sido editado con éxito";
             }
         } catch (Exception $ex) {
             
@@ -212,8 +212,8 @@ class UserController {
 
         return $result;
     }
-    
-    private function updatetoken_push($email,$token_push){
+
+    private function updatetoken_push($email, $token_push) {
         if (!isset($token_push) && empty($token_push)) {
             return TRUE;
         }

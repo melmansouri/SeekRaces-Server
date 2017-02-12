@@ -43,6 +43,8 @@ $app->get('/user/verification', 'verificationSignIn');
 
 $app->post('/user/login', 'login');
 
+$app->put('/user', 'editUser');
+
 /*$app->get('/user/forgotPwd/{email}', 'forgotPwd');
 
 $app->post('/user/restPwd', 'restPwd');*/
@@ -96,6 +98,13 @@ function login(Request $request, Response $response){
     $data = $request->getParsedBody();
     $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
     $result=$userController->login($data);
+    return json_encode($result->getArray());
+}
+
+function editUser(Request $request, Response $response) {
+    $data = $request->getParsedBody();
+    $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
+    $result=$userController->editUser($data);
     return json_encode($result->getArray());
 }
 
