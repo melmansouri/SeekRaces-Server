@@ -10,7 +10,7 @@ class Event{
     private $description;
     private $imageBase64;
     private $distance;
-    private $country;
+    private $place;
     private $city;
     private $date_time_init;
     private $web;
@@ -51,14 +51,9 @@ class Event{
         return $this->distance;
     }
 
-    public function getCountry() {
-        return $this->country;
+    public function getPlace() {
+        return $this->place;
     }
-
-    public function getCity() {
-        return $this->city;
-    }
-
     public function getDate_time_init() {
         return $this->date_time_init;
     }
@@ -111,12 +106,8 @@ class Event{
         $this->distance = $distance;
     }
 
-    public function setCountry($country) {
-        $this->country = $country;
-    }
-
-    public function setCity($city) {
-        $this->city = $city;
+    public function setPlace($place) {
+        $this->place = $place;
     }
 
     public function setDate_time_init($date_time_init) {
@@ -152,8 +143,7 @@ class Event{
             "description"=> $this->description,
             "imageBase64"=> $this->imageBase64,
             "distance"=> $this->distance,
-            "country"=> $this->country,
-            "city"=> $this->city,
+            "place"=> $this->place,
             "date_time_init"=> $this->date_time_init,
             "web"=> $this->web,
             "num_reviews"=> $this->num_reviews,

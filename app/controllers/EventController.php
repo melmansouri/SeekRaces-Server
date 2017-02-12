@@ -15,9 +15,9 @@ class EventController {
         $messageResponse = "Error al añadir la carrera. Intentalo más tarde";
         $isOk = FALSE;
         try {
-            $query = "INSERT INTO event(user, name, description, image,distance,country,city,date_time_init,web)"
+            $query = "INSERT INTO event(user, name, description, image,distance,place,date_time_init,web)"
                     . " VALUES"
-                    . " (:user, :name, :description, :image,:distance,:country,:city,:date_time_init,:web)";
+                    . " (:user, :name, :description, :image,:distance,:place,:date_time_init,:web)";
             $imageName = "";
             if (isset($data["imageBase64"]) && !empty($data["imageBase64"])) {
                 $file_path_photo = \app\common\Utils::base64ToFile($data["imageBase64"],\app\common\Utils::getCurrentMilliseconds());
@@ -29,8 +29,7 @@ class EventController {
                 "description" => $data["description"],
                 "image" => $imageName,
                 "distance" => $data["distance"],
-                "country" => $data["country"],
-                "city" => $data["city"],
+                "place" => $data["place"],
                 "date_time_init" => $data["date_time_init"],
                 "web" => $data["web"]);
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
@@ -55,20 +54,15 @@ class EventController {
         $messageResponse = "Problemas para obtener las carreras. Intentalo más tarde";
         $isOk = FALSE;
         try {
-            $columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.country,e.city,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating, "
+            $columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating, "
                     . "(select if(f.event is null,false,true) from favorite f where f.event=e.id and f.user like :user) as favorite";
-            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE e.user <> :user and e.country like :country and e.city like :city";
+            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE e.user <> :user and e.place like :place";
             $dataQuery = array("user" => $data["user"],
-                "country" => "%%",
-                "city" => "%%");
+                "place" => "%%");
             
 
-            if (array_key_exists("country", $data)) {
-                $dataQuery["country"] = "%" . $data["country"] . "%";
-            }
-
-            if (array_key_exists("city", $data)) {
-                $dataQuery["city"] = "%" . $data["city"] . "%";
+            if (array_key_exists("place", $data)) {
+                $dataQuery["place"] = "%" . $data["place"] . "%";
             }
 
             //if (array_key_exists("distance", $data)) {
@@ -103,8 +97,7 @@ class EventController {
                     $base64= \app\common\Utils::fileToBase64($imageName);
                     $event->setImageBase64($base64);
                     $event->setDistance($eventos[$i]["distance"]);
-                    $event->setCountry($eventos[$i]["country"]);
-                    $event->setCity($eventos[$i]["city"]);
+                    $event->setPlace($eventos[$i]["place"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
                     $event->setNum_reviews($eventos[$i]["num_reviews"]);
@@ -137,7 +130,7 @@ class EventController {
         $messageResponse = "Problemas para obtener tus carreras. Intentalo más tarde";
         $isOk = FALSE;
         try {
-            $columnsResultQuery="e.id,e.user,e.name,e.description,e.image,e.distance,e.country,e.city,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating";
+            $columnsResultQuery="e.id,e.user,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating";
             $query = "SELECT ".$columnsResultQuery ." FROM event e WHERE e.user = :user";
             $dataQuery = array("user" => $data["email"]);
             $eventos = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
@@ -155,8 +148,7 @@ class EventController {
                     $base64= \app\common\Utils::fileToBase64($imageName);
                     $event->setImageBase64($base64);
                     $event->setDistance($eventos[$i]["distance"]);
-                    $event->setCountry($eventos[$i]["country"]);
-                    $event->setCity($eventos[$i]["city"]);
+                    $event->setPlace($eventos[$i]["place"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
                     $event->setNum_reviews($eventos[$i]["num_reviews"]);
@@ -210,7 +202,7 @@ class EventController {
         $messageResponse = "No se ha podido editar la carrera";
         $isOk = FALSE;
         try {
-            $query = "UPDATE event SET name = :name, description = :description, image = :image, distance = :distance, country = :country, city = :city, date_time_init = :date_time_init, web = :web"
+            $query = "UPDATE event SET name = :name, description = :description, image = :image, distance = :distance, place = :place, date_time_init = :date_time_init, web = :web"
                     . " WHERE "
                     . "user = :user AND id = :id";
             $imageName = "";
@@ -225,8 +217,7 @@ class EventController {
                 "description" => $data["description"],
                 "image" => $imageName,
                 "distance" => $data["distance"],
-                "country" => $data["country"],
-                "city" => $data["city"],
+                "place" => $data["place"],
                 "date_time_init" => $data["date_time_init"],
                 "web" => $data["web"]);
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {

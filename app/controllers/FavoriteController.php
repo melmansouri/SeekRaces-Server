@@ -39,7 +39,7 @@ class FavoriteController {
         $response = new \app\entities\Response();
         $messageResponse = "error al obtener las carreras favoritas";
         $isOk = FALSE;
-        try {$columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.country,e.city,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating";
+        try {$columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating";
             $query = "SELECT ".$columnsResultQuery." FROM favorite as f inner join event as e inner join user as u on f.event = e.id and e.user = u.email WHERE f.user= :user";
             $dataQuery = array("user" => $data["email"]);
             
@@ -58,8 +58,7 @@ class FavoriteController {
                     $base64= \app\common\Utils::fileToBase64($imageName);
                     $event->setImageBase64($base64);
                     $event->setDistance($eventos[$i]["distance"]);
-                    $event->setCountry($eventos[$i]["country"]);
-                    $event->setCity($eventos[$i]["city"]);
+                    $event->setPlace($eventos[$i]["place"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
                     $event->setNum_reviews($eventos[$i]["num_reviews"]);

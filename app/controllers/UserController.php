@@ -122,9 +122,6 @@ class UserController {
                         //$base64= \app\common\Utils::fileToBase64($filename);
                         //$user->setPhotoBase64($base64);
                         $response->setContent(json_encode($user->getArray()));
-                        $countryCityController= new \app\controllers\CountryCityController($this->connectionDb);
-                        $response->setCity($countryCityController->getCities());
-                        $response->setCountry($countryCityController->getCountries());
                     }
                 }
             }
@@ -164,6 +161,46 @@ class UserController {
 
         $response->setMessage($messageResponse);
         $response->setIsOk($isOk);
+        return $response;
+    }
+    
+    public function editUser($data) {
+        $response = new \app\entities\Response();
+        $messageResponse = "No se ha podido editar tu perfil";
+        $isOk = FALSE;
+        try {
+            $query = "UPDATE user SET name = :name, description = :description, image = :image, distance = :distance, place = :place, date_time_init = :date_time_init, web = :web"
+                    . " WHERE "
+                    . "user = :user AND id = :id";
+            $imageName = "";
+            if (isset($data["imageBase64"]) && !empty($data["imageBase64"])) {
+                $file_path_photo = \app\common\Utils::base64ToFile($data["imageBase64"],\app\common\Utils::getCurrentMilliseconds());
+                $imageName=$file_path_photo;
+            }
+            $dataQuery = array(
+                "user" => $data["user"],
+                "id" => $args["id"],
+                "name" => $data["name"],
+                "description" => $data["description"],
+                "image" => $imageName,
+                "distance" => $data["distance"],
+                "place" => $data["place"],
+                "date_time_init" => $data["date_time_init"],
+                "web" => $data["web"]);
+            if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
+                $isOk = TRUE;
+                $messageResponse = "Éxito al editar la carrera";
+            }
+        } catch (Exception $ex) {
+            
+        } catch (\PDOException $pex) {
+            
+        }
+
+
+        $response->setIsOk($isOk);
+        $response->setMessage($messageResponse);
+
         return $response;
     }
 

@@ -5,8 +5,6 @@ class Response{
     
     private $message;
     private $content;
-    private $country;
-    private $city;
     private $isOk;
 
 
@@ -29,22 +27,6 @@ class Response{
     public function setContent($content) {
         $this->content = $content;
     }
-    
-    public function getCountry() {
-        return $this->country;
-    }
-
-    public function getCity() {
-        return $this->city;
-    }
-
-    public function setCountry($country) {
-        $this->country = $country;
-    }
-
-    public function setCity($city) {
-        $this->city = $city;
-    }
 
         
     public function getIsOk() {
@@ -59,8 +41,6 @@ class Response{
     public function getArray(){
         return array("message"=> $this->message,
             "content"=> $this->content,
-            "countries"=> $this->country,
-            "cities"=> $this->city,
             "isOk"=> $this->isOk);
     }
     
