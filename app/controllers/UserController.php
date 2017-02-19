@@ -105,10 +105,11 @@ class UserController {
             $pwd = $data['pwd'];
             $token_push = $data['token_push'];
 
-            if (!$this->checkExistUser($email)) {
+            $userFromDb = $this->checkExistUser($email);
+            if (!$userFromDb) {
                 $messageResponse = "Este usuario no existe.";
             } else {
-                $userFromDb = $this->checkExistUser($email);
+
                 if ($userFromDb && $this->updatetoken_push($email, $token_push)) {
                     $user->setEmail($email);
                     $pwdhash = $userFromDb->pwd;
@@ -136,18 +137,19 @@ class UserController {
         return $response;
     }
 
-    public function sendMailToRestorePwd($email) {
+    public function forgotPwd($email) {
         $response = new \app\entities\Response();
         $messageResponse = 'Problemas para recuperar la contraseña';
         $isOk = FALSE;
         try {
 
-            if (!$this->checkExistUser($email)) {
-                $messageResponse = "Este usuario puede que no exista.";
+            $userFromDb = $this->checkExistUser($email);
+            if (!$userFromDb) {
+                $messageResponse = "Este usuario puede que no exista";
             } else {
                 $verification = new \app\controllers\VerificationController($this->connectionDb);
                 if ($verification->insertUserVerificationToRestorePwd($email)) {
-                    if ($verification->sendMailVerificationRestPwd($addressTo, $nameTo)) {
+                    if ($verification->sendMailVerificationRestPwd($email, $userFromDb->username)) {
                         $isOk = true;
                         $messageResponse = "Se le ha enviado un correo para restaurar la contraseña.";
                     }
@@ -164,7 +166,7 @@ class UserController {
         return $response;
     }
 
-    public function editUser( $data) {
+    public function editUser($data) {
         $response = new \app\entities\Response();
         $messageResponse = "No se ha podido editar tu perfil";
         $isOk = FALSE;
@@ -182,9 +184,9 @@ class UserController {
                 $file_path_photo = \app\common\Utils::base64ToFile($data["photoBase64"], $data["photo_url"]);
                 $imageName = $file_path_photo;
                 $updateQuery .= ", photo_url = :photo_url";
-                $dataQuery["photo_url"]= $imageName;
+                $dataQuery["photo_url"] = $imageName;
             }
-            $query=$updateQuery.$whereQuery;
+            $query = $updateQuery . $whereQuery;
 
 
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
@@ -233,6 +235,37 @@ class UserController {
         $subject = "Confirmacion Cuenta SeekRaces";
         $body = "Bienvenido " . $nameTo . " a SeekRaces.";
         return $mail->sendMail($addressTo, $nameTo, $subject, $body);
+    }
+
+    public function resetPwd($token, $pwd) {
+        $messageResponse = "No se ha podido cambiar tu contraseña";
+        try {
+            $verificationController = new \app\controllers\VerificationController($this->connectionDb);
+            $dataUserVerificationResetPwd = $verificationController->getDataVerificationUser($token);
+            if ($dataUserVerificationResetPwd) {
+                $query = "UPDATE user SET pwd = :pwd WHERE "
+                        . "email = :email";
+
+                $dataQuery = array(
+                    "email" => $dataUserVerificationResetPwd->email,
+                    "pwd" => \app\common\Utils::cifrarBCrypt($pwd));
+
+                if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
+                    $verificationController->deleteExistUserVerification($dataUserVerificationResetPwd->email);
+                    $messageResponse= "<h3>Tu contraseña se ha cambiado con éxito</h3>";
+                    $mail = new \app\common\Mail();
+                    $subject = "Cambia tu contraseña en SeekRaces";
+                    $body = "Tu contraseña se ha cambiado con éxito";
+                    $mail->sendMail($dataUserVerificationResetPwd->email, $dataUserVerificationResetPwd->email, $subject, $body);
+                }
+            }
+        } catch (Exception $ex) {
+            
+        } catch (\PDOException $pex) {
+            
+        }
+        
+        echo $messageResponse;
     }
 
 }

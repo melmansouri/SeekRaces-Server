@@ -87,7 +87,7 @@ class VerificationController {
     public function sendMailVerificationRestPwd($addressTo, $nameTo) {
         $mail = new \app\common\Mail();
         $subject = "Cambia tu contraseña en SeekRaces";
-        $url_confirmacion = "http://localhost:8080/SeekRaces/api/user/restPwd?token=" . $this->token_verification;
+        $url_confirmacion = "http://192.168.0.106:8080/SeekRaces/api/reset.php?token=" . $this->token_verification;
         $body = $this->generateBodyToSendMailToVerificationResetPwd($url_confirmacion);
         return $mail->sendMail($addressTo, $nameTo, $subject, $body);
     }
@@ -102,14 +102,14 @@ class VerificationController {
     }
 
     private function generateBodyToSendMailToVerificationResetPwd($urlConfimation) {
-        $body = "Presiona el siguiente botón para cambiar la contraseña:<br><br>"
+        $body = "Presiona el siguiente botón para ir al formulario de cambio de contraseña:<br><br>"
                 . "<a style=\"white-space:nowrap;display:block;padding:10px 25px;background:#87AA14;"
                 . "color:#ffffff;font-family:Helvetica Neue, Arial, sans-serif;"
                 . "font-size:15px;line-height:15px;font-weight:bold;"
                 . "text-decoration:none;border-collapse:collapse;"
                 . "border-color:#82a313;border-style:1px solid;border-radius:3px;\" "
                 . "href=\"$urlConfimation\" target=\"_blank\">
-                        Confirmar Email</a>";
+                        Cambiar la contraseña</a>";
 
         return $body;
     }

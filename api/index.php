@@ -45,9 +45,7 @@ $app->post('/user/login', 'login');
 
 $app->put('/user', 'editUser');
 
-/*$app->get('/user/forgotPwd/{email}', 'forgotPwd');
-
-$app->post('/user/restPwd', 'restPwd');*/
+$app->get('/user/{email}/forgotPassword', 'forgotPwd');
 
 $app->get('/event', 'getEvents');
 
@@ -108,12 +106,12 @@ function editUser(Request $request, Response $response) {
     return json_encode($result->getArray());
 }
 
-/*function forgotPwd(Request $request, Response $response,$args){
+function forgotPwd(Request $request, Response $response,$args){
     $email = $args['email'];
-    $userController=new app\Controller\UserController(app\connection\ConnectionPDO::getInstance());
-    $result=$userController->sendMailToRestorePwd($email);
+    $userController=new app\Controllers\UserController(app\connection\ConnectionPDO::getInstance());
+    $result=$userController->forgotPwd($email);
     return json_encode($result->getArray());
-}*/
+}
 
 function addNewEvent(Request $request, Response $response){
     $data = $request->getParsedBody();
