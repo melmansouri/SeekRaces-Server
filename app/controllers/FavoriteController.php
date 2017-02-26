@@ -18,8 +18,8 @@ class FavoriteController {
             $query = "INSERT INTO favorite(user, event)"
                     . " VALUES"
                     . " (:user, :event)";
-            $dataQuery = array("user" => $data["email"],
-                "event" => $data["id"]);
+            $dataQuery = array("user" => $data["user"],
+                "event" => $data["event"]);
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                 $isOk = TRUE;
                 $messageResponse = "La carrera ha sido añadida como favorita";
