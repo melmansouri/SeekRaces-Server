@@ -35,7 +35,7 @@ class Utils {
 
             $nameFile = $name . ".png";
 
-            file_put_contents($root_path_project ."/". $nameFile, $data);
+            file_put_contents($root_path_project . $nameFile, $data);
         } catch (Exception $ex) {
             throw $ex;
         }

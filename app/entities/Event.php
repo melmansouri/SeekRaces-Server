@@ -9,9 +9,9 @@ class Event{
     private $name;
     private $description;
     private $imageBase64;
+    private $imageName;
     private $distance;
     private $place;
-    private $city;
     private $date_time_init;
     private $web;
     private $num_reviews;
@@ -23,117 +23,127 @@ class Event{
         
     }
     
-    public function getId() {
+    function getId() {
         return $this->id;
     }
 
-    public function getUser() {
+    function getUser() {
         return $this->user;
     }
 
-    public function getUserName() {
+    function getUserName() {
         return $this->userName;
     }
 
-    public function getName() {
+    function getName() {
         return $this->name;
     }
 
-    public function getDescription() {
+    function getDescription() {
         return $this->description;
     }
 
-    public function getImageBase64() {
+    function getImageBase64() {
         return $this->imageBase64;
     }
 
-    public function getDistance() {
+    function getImageName() {
+        return $this->imageName;
+    }
+
+    function getDistance() {
         return $this->distance;
     }
 
-    public function getPlace() {
+    function getPlace() {
         return $this->place;
     }
-    public function getDate_time_init() {
+
+    function getDate_time_init() {
         return $this->date_time_init;
     }
 
-    public function getWeb() {
+    function getWeb() {
         return $this->web;
     }
 
-    public function getNum_reviews() {
+    function getNum_reviews() {
         return $this->num_reviews;
     }
 
-    public function getTotal_scores() {
+    function getTotal_scores() {
         return $this->total_scores;
     }
 
-    public function getRating() {
+    function getRating() {
         return $this->rating;
     }
 
-    public function getIsFavorite() {
+    function getIsFavorite() {
         return $this->isFavorite;
     }
 
-    public function setId($id) {
+    function setId($id) {
         $this->id = $id;
     }
 
-    public function setUser($user) {
+    function setUser($user) {
         $this->user = $user;
     }
 
-    public function setUserName($userName) {
+    function setUserName($userName) {
         $this->userName = $userName;
     }
 
-    public function setName($name) {
+    function setName($name) {
         $this->name = $name;
     }
 
-    public function setDescription($description) {
+    function setDescription($description) {
         $this->description = $description;
     }
 
-    public function setImageBase64($imageBase64) {
+    function setImageBase64($imageBase64) {
         $this->imageBase64 = $imageBase64;
     }
 
-    public function setDistance($distance) {
+    function setImageName($imageName) {
+        $this->imageName = $imageName;
+    }
+
+    function setDistance($distance) {
         $this->distance = $distance;
     }
 
-    public function setPlace($place) {
+    function setPlace($place) {
         $this->place = $place;
     }
 
-    public function setDate_time_init($date_time_init) {
+    function setDate_time_init($date_time_init) {
         $this->date_time_init = $date_time_init;
     }
 
-    public function setWeb($web) {
+    function setWeb($web) {
         $this->web = $web;
     }
 
-    public function setNum_reviews($num_reviews) {
+    function setNum_reviews($num_reviews) {
         $this->num_reviews = $num_reviews;
     }
 
-    public function setTotal_scores($total_scores) {
+    function setTotal_scores($total_scores) {
         $this->total_scores = $total_scores;
     }
 
-    public function setRating($rating) {
+    function setRating($rating) {
         $this->rating = $rating;
     }
 
-    public function setIsFavorite($isFavorite) {
+    function setIsFavorite($isFavorite) {
         $this->isFavorite = $isFavorite;
     }
-            
+
+                
     public function getArray(){
         return array(
             "id"=> $this->id,

@@ -95,6 +95,7 @@ class EventController {
                     $event->setDescription($eventos[$i]["description"]);
                     $imageName=$eventos[$i]["image"];
                     $base64= \app\common\Utils::fileToBase64($imageName);
+                    //$event->setImageName($imageName);
                     $event->setImageBase64($base64);
                     $event->setDistance($eventos[$i]["distance"]);
                     $event->setPlace($eventos[$i]["place"]);
@@ -147,6 +148,7 @@ class EventController {
                     $imageName=$eventos[$i]["image"];
                     $base64= \app\common\Utils::fileToBase64($imageName);
                     $event->setImageBase64($base64);
+                    //$event->setImageName($imageName);
                     $event->setDistance($eventos[$i]["distance"]);
                     $event->setPlace($eventos[$i]["place"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
