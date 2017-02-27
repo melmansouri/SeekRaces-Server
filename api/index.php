@@ -53,9 +53,9 @@ $app->get('/user/{email}/event', 'getOwnEvents');
 
 $app->post('/event', 'addNewEvent');
 
-$app->delete('/event/{id}', 'deleteEvent');
+$app->delete('/user/{email}/event/{id}', 'deleteEvent');
 
-$app->put('/event/{id}', 'editEvent');
+$app->put('/event', 'editEvent');
 
 $app->post('/event/{id}/reviews', 'addNewOpinionEvent');
 
@@ -134,10 +134,10 @@ function getOwnEvents(Request $request, Response $response,$args) {
     return json_encode($result->getArray());
 }
 
-function editEvent(Request $request, Response $response,$args) {
+function editEvent(Request $request, Response $response) {
     $data = $request->getParsedBody();
     $eventController=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventController->editEvent($args,$data);
+    $result=$eventController->editEvent($data);
     return json_encode($result->getArray());
 }
 

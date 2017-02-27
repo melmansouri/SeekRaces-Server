@@ -178,8 +178,9 @@ class EventController {
         $messageResponse = "Error al intentar borrar la carrera";
         $isOk = FALSE;
         try {
-            $query = "DELETE FROM event WHERE id = :id";
-            $dataQuery = array("id" => $data["id"]);
+            $query = "DELETE FROM event WHERE user = :user and id = :id";
+            $dataQuery = array("id" => $data["id"],
+                "user"=>$data["email"]);
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                 $isOk = TRUE;
                 $messageResponse = "Se ha eliminado con éxito";
@@ -197,29 +198,35 @@ class EventController {
         return $response;
     }
 
-    public function editEvent($args, $data) {
+    public function editEvent($data) {
         $response = new \app\entities\Response();
         $messageResponse = "No se ha podido editar la carrera";
         $isOk = FALSE;
         try {
-            $query = "UPDATE event SET name = :name, description = :description, image = :image, distance = :distance, place = :place, date_time_init = :date_time_init, web = :web"
-                    . " WHERE "
-                    . "user = :user AND id = :id";
-            $imageName = "";
-            if (isset($data["imageBase64"]) && !empty($data["imageBase64"])) {
-                $file_path_photo = \app\common\Utils::base64ToFile($data["imageBase64"],\app\common\Utils::getCurrentMilliseconds());
-                $imageName=$file_path_photo;
-            }
+            $query = "UPDATE event SET name = :name, description = :description, distance = :distance, place = :place, date_time_init = :date_time_init, web = :web";
+                    
+            $whereQuery=" WHERE user = :user AND id = :id";
+            
             $dataQuery = array(
                 "user" => $data["user"],
-                "id" => $args["id"],
+                "id" => $data["id"],
                 "name" => $data["name"],
                 "description" => $data["description"],
-                "image" => $imageName,
                 "distance" => $data["distance"],
                 "place" => $data["place"],
                 "date_time_init" => $data["date_time_init"],
                 "web" => $data["web"]);
+            
+            $imageName = "";
+            if (isset($data["imageBase64"]) && !empty($data["imageBase64"])) {
+                $file_path_photo = \app\common\Utils::base64ToFile($data["imageBase64"],\app\common\Utils::getCurrentMilliseconds());
+                $imageName=$file_path_photo;
+                $query.=", image = :image";
+                $dataQuery["image"]=$imageName;
+            }
+            
+            $query.=$whereQuery;
+            
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                 $isOk = TRUE;
                 $messageResponse = "Éxito al editar la carrera";

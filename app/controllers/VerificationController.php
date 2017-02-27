@@ -87,7 +87,7 @@ class VerificationController {
     public function sendMailVerificationRestPwd($addressTo, $nameTo) {
         $mail = new \app\common\Mail();
         $subject = "Cambia tu contraseña en SeekRaces";
-        $url_confirmacion = "http://192.168.0.106:8080/SeekRaces/api/reset.php?token=" . $this->token_verification;
+        $url_confirmacion = "http://192.168.0.102:8080/SeekRaces/api/reset.php?token=" . $this->token_verification;
         $body = $this->generateBodyToSendMailToVerificationResetPwd($url_confirmacion);
         return $mail->sendMail($addressTo, $nameTo, $subject, $body);
     }
@@ -95,7 +95,7 @@ class VerificationController {
     public function sendMailVerification($addressTo, $nameTo) {
         $mail = new \app\common\Mail();
         $subject = "Confirmar registro en SeekRaces";
-        $url_confirmacion = "http://192.168.0.105:8080/SeekRaces/api/user/verification?token=" . $this->token_verification;
+        $url_confirmacion = "http://192.168.0.102:8080/SeekRaces/api/user/verification?token=" . $this->token_verification;
         //$url_confirmacion = "http://192.168.105.18:8080/SeekRaces/api/user/verification?token=" . $this->token_verification;
         $body = $this->generateBodyToSendMailToVerificationSignIn($url_confirmacion);
         return $mail->sendMail($addressTo, $nameTo, $subject, $body);
