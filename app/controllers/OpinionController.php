@@ -46,7 +46,7 @@ class OpinionController {
         $messageResponse = "Problemas para obtener los comentarios";
         $isOk = FALSE;
         try {
-            $query = "SELECT u.username,u.photo,ev.score,ev.comment,ev.dateTime_vote FROM opinion as ev inner join user as u on ev.user=u.email WHERE ev.event = :id";
+            $query = "SELECT u.username,u.photo_url,ev.score,ev.comment,ev.date_opinion FROM opinion as ev inner join user as u on ev.user=u.email WHERE ev.event = :id";
             $dataQuery = array("id" => (int) $data["id"]);
 
             $eventVotes = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
@@ -56,10 +56,10 @@ class OpinionController {
                 for ($i = 0; $i < count($eventVotes); $i++) {
                     $eventVote = new \app\entities\Opinion();
                     $eventVote->setUsername($eventVotes[$i]["username"]);
-                    $eventVote->setPhoto($eventVotes[$i]["photo"]);
+                    $eventVote->setPhoto_name($eventVotes[$i]["photo"]);
                     $eventVote->setScore($eventVotes[$i]["score"]);
                     $eventVote->setComment($eventVotes[$i]["comment"]);
-                    $eventVote->setDateTimeVote($eventVotes[$i]["dateTime_vote"]);
+                    $eventVote->setDateOpinion($eventVotes[$i]["dateTime_vote"]);
                     array_push($arrayEventVotesFinal, $eventVote->getArray());
                 }
                 $isOk = TRUE;

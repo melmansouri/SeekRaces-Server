@@ -101,9 +101,9 @@ class EventController {
                     $event->setPlace($eventos[$i]["place"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
-                    $event->setNum_reviews($eventos[$i]["num_reviews"]);
+                    /*$event->setNum_reviews($eventos[$i]["num_reviews"]);
                     $event->setTotal_scores($eventos[$i]["total_scores"]);
-                    $event->setRating($eventos[$i]["rating"]);
+                    $event->setRating($eventos[$i]["rating"]);*/
                     $event->setIsFavorite($eventos[$i]["favorite"]);
                     array_push($arrayEventosFinal, $event->getArray());
                 }
@@ -153,9 +153,9 @@ class EventController {
                     $event->setPlace($eventos[$i]["place"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
-                    $event->setNum_reviews($eventos[$i]["num_reviews"]);
+                    /*$event->setNum_reviews($eventos[$i]["num_reviews"]);
                     $event->setTotal_scores($eventos[$i]["total_scores"]);
-                    $event->setRating($eventos[$i]["rating"]);
+                    $event->setRating($eventos[$i]["rating"]);*/
                     array_push($arrayEventosFinal, $event->getArray());
                 }
                 $isOk = TRUE;

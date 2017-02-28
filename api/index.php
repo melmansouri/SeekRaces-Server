@@ -57,11 +57,11 @@ $app->delete('/user/{email}/event/{id}', 'deleteEvent');
 
 $app->put('/event', 'editEvent');
 
-$app->post('/event/{id}/reviews', 'addNewOpinionEvent');
+$app->post('/user/event/reviews', 'addNewOpinionEvent');
 
-$app->get('/event/{id}/reviews', 'getEventReviews');
+$app->get('/user/event/{id}/reviews', 'getEventReviews');
 
-$app->put('/user/{email}/event/{id}/reviews', 'editEventOpinion');
+$app->put('/user/event/reviews', 'editEventOpinion');
 
 $app->post('/user/event/favorites', 'addEventToFavorite');
 

@@ -3,62 +3,63 @@ namespace app\entities;
 
 class Opinion{
     private $username;
-    private $photo;
+    private $photo_name;
     private $score;
     private $comment;
-    private $dateTimeOpinion;
+    private $dateOpinion;
     
     public function __construct() {
         
     }
-    function getUsername() {
+    public function getUsername() {
         return $this->username;
     }
 
-    function getPhoto() {
-        return $this->photo;
+    public function getPhoto_name() {
+        return $this->photo_name;
     }
 
-    function getScore() {
+    public function getScore() {
         return $this->score;
     }
 
-    function getComment() {
+    public function getComment() {
         return $this->comment;
     }
 
-    function getDateTimeOpinion() {
-        return $this->dateTimeOpinion;
+    public function getDateOpinion() {
+        return $this->dateOpinion;
     }
 
-    function setUsername($username) {
+    public function setUsername($username) {
         $this->username = $username;
     }
 
-    function setPhoto($photo) {
-        $this->photo = $photo;
+    public function setPhoto_name($photo_name) {
+        $this->photo_name = $photo_name;
     }
 
-    function setScore($score) {
+    public function setScore($score) {
         $this->score = $score;
     }
 
-    function setComment($comment) {
+    public function setComment($comment) {
         $this->comment = $comment;
     }
 
-    function setDateTimeOpinion($dateTimeOpinion) {
-        $this->dateTimeOpinion = $dateTimeOpinion;
+    public function setDateOpinion($dateOpinion) {
+        $this->dateOpinion = $dateOpinion;
     }
 
+    
     
     public function getArray(){
         return array(
             "username"=> $this->username,
-            "photo"=> $this->photo,
+            "photo_name"=> $this->photo_name,
             "score"=> $this->score,
             "comment"=> $this->comment,
-            "dateTimeOpinion"=> $this->dateTimeOpinion
+            "dateOpinion"=> $this->dateOpinion
         );
     }
     
