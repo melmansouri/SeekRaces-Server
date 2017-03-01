@@ -63,6 +63,8 @@ $app->get('/user/event/{id}/reviews', 'getEventReviews');
 
 $app->put('/user/event/reviews', 'editEventOpinion');
 
+$app->delete('/user/{user}/event/{event}/reviews', 'deleteEventOpinion');
+
 $app->post('/user/event/favorites', 'addEventToFavorite');
 
 $app->get('/user/{email}/event/favorites', 'getEventsFavorites');
@@ -147,10 +149,10 @@ function deleteEvent(Request $request, Response $response,$args) {
     return json_encode($result->getArray());
 }
 
-function addNewOpinionEvent(Request $request, Response $response,$args) {
+function addNewOpinionEvent(Request $request, Response $response) {
     $data = $request->getParsedBody();
     $opinionController=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
-    $result=$opinionController->addNewOpinionEvent($args,$data);
+    $result=$opinionController->addNewOpinionEvent($data);
     return json_encode($result->getArray());
 }
 
@@ -160,10 +162,16 @@ function getEventReviews(Request $request, Response $response,$args) {
     return json_encode($result->getArray());
 }
 
-function editEventOpinion(Request $request, Response $response,$args) {
+function editEventOpinion(Request $request, Response $response) {
     $data = $request->getParsedBody();
-    $eventController=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
-    $result=$eventController->updateOpinion($args,$data);
+    $opinionController=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
+    $result=$opinionController->updateOpinion($data);
+    return json_encode($result->getArray());
+}
+
+function deleteEventOpinion(Request $request, Response $response,$args) {
+    $opinionController=new app\controllers\OpinionController(app\connection\ConnectionPDO::getInstance());
+    $result=$opinionController->deleteOpinion($args);
     return json_encode($result->getArray());
 }
 

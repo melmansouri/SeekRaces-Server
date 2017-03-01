@@ -10,20 +10,20 @@ class OpinionController {
         $this->connectionDb = $connectionDb;
     }
 
-    public function addNewOpinionEvent($args, $data) {
+    public function addNewOpinionEvent($data) {
         $response = new \app\entities\Response();
         $messageResponse = "Error al añadir tu comentario";
         $isOk = FALSE;
         try {
-            $query = "INSERT INTO opinion(user, event, score, comment, dateTime_vote)"
+            $query = "INSERT INTO opinion(user, event, score, comment, date_opinion)"
                     . " VALUES"
-                    . " (:user, :event, :score, :comment, :dateTime_vote)";
+                    . " (:user, :event, :score, :comment, :date_opinion)";
             $dataQuery = array(
                 "user" => $data["user"],
-                "event" => $args["id"],
+                "event" => $data["event"],
                 "score" => $data["score"],
                 "comment" => $data["comment"],
-                "dateTime_vote" => $data["dateTime_vote"]);
+                "date_opinion" => $data["dateOpinion"]);
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                 $isOk = TRUE;
                 $messageResponse = "Gracias por comentar";
@@ -56,10 +56,10 @@ class OpinionController {
                 for ($i = 0; $i < count($eventVotes); $i++) {
                     $eventVote = new \app\entities\Opinion();
                     $eventVote->setUsername($eventVotes[$i]["username"]);
-                    $eventVote->setPhoto_name($eventVotes[$i]["photo"]);
+                    $eventVote->setPhoto_name($eventVotes[$i]["photo_url"]);
                     $eventVote->setScore($eventVotes[$i]["score"]);
                     $eventVote->setComment($eventVotes[$i]["comment"]);
-                    $eventVote->setDateOpinion($eventVotes[$i]["dateTime_vote"]);
+                    $eventVote->setDateOpinion($eventVotes[$i]["date_opinion"]);
                     array_push($arrayEventVotesFinal, $eventVote->getArray());
                 }
                 $isOk = TRUE;
@@ -81,20 +81,48 @@ class OpinionController {
     }
     
     //Comprobar el trigger para que modifique solo el score y el rating de la tabla event en caso de editar la opinion
-    public function updateOpinion($args, $data) {
+    public function updateOpinion($data) {
         $response = new \app\entities\Response();
         $messageResponse = "No se ha podido editar tu comentario";
         $isOk = FALSE;
         try {
-            $query = "UPDATE opinion SET score = :score, comment = :comment, dateTime_vote = :dateTime_vote"
+            $query = "UPDATE opinion SET score = :score, comment = :comment, date_opinion = :date_opinion"
                     . " WHERE"
                     . " user = :user AND event = :event";
             $dataQuery = array(
                 "user" => $data["user"],
-                "event" => $args["id"],
+                "event" => $data["event"],
                 "score" => $data["score"],
                 "comment" => $data["comment"],
-                "dateTime_vote" => $data["dateTime_vote"]);
+                "date_opinion" => $data["dateOpinion"]);
+            if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
+                $isOk = TRUE;
+                $messageResponse="";
+            }
+        } catch (Exception $ex) {
+            
+        } catch (\PDOException $pex) {
+            
+        }
+
+
+        $response->setIsOk($isOk);
+        $response->setMessage($messageResponse);
+
+        return $response;
+    }
+    
+    public function deleteOpinion($args) {
+        $response = new \app\entities\Response();
+        $messageResponse = "No se ha podido eliminar tu comentario";
+        $isOk = FALSE;
+        try {
+            $query = "DELETE FROM opinion"
+                    . " WHERE"
+                    . " user = :user AND event = :event";
+            $dataQuery = array(
+                "user" => $args["user"],
+                "event" => $args["event"]);
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                 $isOk = TRUE;
                 $messageResponse="";

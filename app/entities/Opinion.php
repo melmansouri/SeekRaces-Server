@@ -55,7 +55,7 @@ class Opinion{
     
     public function getArray(){
         return array(
-            "username"=> $this->username,
+            "userName"=> $this->username,
             "photo_name"=> $this->photo_name,
             "score"=> $this->score,
             "comment"=> $this->comment,
