@@ -3,6 +3,7 @@ namespace app\entities;
 
 class Opinion{
     private $username;
+    private $user;
     private $photo_name;
     private $score;
     private $comment;
@@ -11,51 +12,61 @@ class Opinion{
     public function __construct() {
         
     }
-    public function getUsername() {
+    
+    function getUsername() {
         return $this->username;
     }
 
-    public function getPhoto_name() {
+    function getUser() {
+        return $this->user;
+    }
+
+    function getPhoto_name() {
         return $this->photo_name;
     }
 
-    public function getScore() {
+    function getScore() {
         return $this->score;
     }
 
-    public function getComment() {
+    function getComment() {
         return $this->comment;
     }
 
-    public function getDateOpinion() {
+    function getDateOpinion() {
         return $this->dateOpinion;
     }
 
-    public function setUsername($username) {
+    function setUsername($username) {
         $this->username = $username;
     }
 
-    public function setPhoto_name($photo_name) {
+    function setUser($user) {
+        $this->user = $user;
+    }
+
+    function setPhoto_name($photo_name) {
         $this->photo_name = $photo_name;
     }
 
-    public function setScore($score) {
+    function setScore($score) {
         $this->score = $score;
     }
 
-    public function setComment($comment) {
+    function setComment($comment) {
         $this->comment = $comment;
     }
 
-    public function setDateOpinion($dateOpinion) {
+    function setDateOpinion($dateOpinion) {
         $this->dateOpinion = $dateOpinion;
     }
 
-    
+        
     
     public function getArray(){
         return array(
             "userName"=> $this->username,
+            "user"=> $this->user,
             "photo_name"=> $this->photo_name,
             "score"=> $this->score,
             "comment"=> $this->comment,
