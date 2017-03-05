@@ -1,7 +1,7 @@
 <?php
 namespace app\entities;
 
-class Event{
+class Race{
  
     private $id;
     private $user;

@@ -20,8 +20,8 @@ class UserController {
             $user->setPwd($data['pwd']);
             $user->setUsername($data['username']);
             $user->setPhotoBase64($data['photoBase64']);
-            $user->setCountry($data['country']);
-            $user->setToken_push($data['token_push']);
+            /*$user->setCountry($data['country']);
+            $user->setToken_push($data['token_push']);*/
 
             if ($this->checkExistUser($user->getEmail())) {
                 $messageResponse = "Ya existe un usuario con este correo";
@@ -63,8 +63,8 @@ class UserController {
                     $user->setPhoto_url($file_path_photo);
                 }
 
-                $user->setCountry($dataUserVerification->country);
-                $user->setToken_push($dataUserVerification->token_push);
+                /*$user->setCountry($dataUserVerification->country);
+                $user->setToken_push($dataUserVerification->token_push);*/
                 if ($this->insertIntoUserTable($user)) {
                     $verification->deleteExistUserVerification($user->getEmail());
                     $messageResponse = '<h3>Bienvenido a SeekRaces</h3>';
@@ -80,16 +80,25 @@ class UserController {
     }
 
     public function insertIntoUserTable($user) {
-        $query = "INSERT INTO user(email, pwd, username, photo_url, country, token_push)"
+        $query = "INSERT INTO user(email, username, photo_url)"
                 . " VALUES"
-                . " (:email, :pwd, :username, :photo_url, :country, :token_push)";
+                . " (:email, :username, :photo_url)";
+
+        $dataQuery = array('email' => $user->getEmail(),
+            'username' => $user->getUsername(),
+            'photo_url' => $user->getPhoto_url());
+        $pwd=$user->getPwd();
+        if (!empty($pwd) && isset($pwd)) {
+            $query = "INSERT INTO user(email, pwd, username, photo_url)"
+                . " VALUES"
+                . " (:email, :pwd, :username, :photo_url)";
 
         $dataQuery = array('email' => $user->getEmail(),
             'pwd' => $user->getPwd(),
             'username' => $user->getUsername(),
-            'photo_url' => $user->getPhoto_url(),
-            'country' => $user->getCountry(),
-            'token_push' => $user->getToken_push());
+            'photo_url' => $user->getPhoto_url());
+        }
+        
         $result = $this->connectionDb->executeQueryWithData($query, $dataQuery);
 
         return $result;
@@ -100,31 +109,86 @@ class UserController {
         $messageResponse = 'Error en el servidor';
         $isOk = FALSE;
         $user = new \app\entities\User();
-        try {
-            $email = $data['email'];
-            $pwd = $data['pwd'];
-            $token_push = $data['token_push'];
+        $idTokenGoogle = $data['idTokenGoogle'];
+        if (isset($idTokenGoogle) && !empty($idTokenGoogle)) {
+            $response = $this->loginGoogle($data);
+        } else {
+            try {
+                $email = $data['email'];
+                $pwd = $data['pwd'];
+                //$token_push = $data['token_push'];
+                $userFromDb = $this->checkExistUser($email);
+                if (!$userFromDb) {
+                    $messageResponse = "Este usuario no existe.";
+                } else {
 
-            $userFromDb = $this->checkExistUser($email);
-            if (!$userFromDb) {
-                $messageResponse = "Este usuario no existe.";
-            } else {
-
-                if ($userFromDb && $this->updatetoken_push($email, $token_push)) {
-                    $user->setEmail($email);
-                    $pwdhash = $userFromDb->pwd;
-                    $messageResponse = "Las credenciales son incorrectas";
-                    if (password_verify($pwd, $pwdhash)) {
-                        $isOk = TRUE;
-                        $messageResponse = "Bienvenido";
-                        $user->setUsername($userFromDb->username);
-                        $filename = $userFromDb->photo_url;
-                        $user->setPhoto_url($filename);
-                        //$base64= \app\common\Utils::fileToBase64($filename);
-                        //$user->setPhotoBase64($base64);
-                        $response->setContent(json_encode($user->getArray()));
+                    if ($userFromDb) {
+                        //$this->updatetoken_push($email, $token_push);
+                        $user->setEmail($email);
+                        $pwdhash = $userFromDb->pwd;
+                        $messageResponse = "Las credenciales son incorrectas";
+                        if (password_verify($pwd, $pwdhash)) {
+                            $isOk = TRUE;
+                            $messageResponse = "Bienvenido";
+                            $user->setUsername($userFromDb->username);
+                            $filename = $userFromDb->photo_url;
+                            $user->setPhoto_url($filename);
+                            //$base64= \app\common\Utils::fileToBase64($filename);
+                            //$user->setPhotoBase64($base64);
+                            $response->setContent(json_encode($user->getArray()));
+                        }
                     }
                 }
+            } catch (Exception $ex) {
+                
+            } catch (\PDOException $pex) {
+                
+            }
+
+            $response->setMessage($messageResponse);
+            $response->setIsOk($isOk);
+        }
+
+        return $response;
+    }
+
+    public function loginGoogle($data) {
+        $response = new \app\entities\Response();
+        $messageResponse = 'Error en el servidor';
+        $isOk = FALSE;
+        $user = new \app\entities\User();
+        try {
+            $email = $data['email'];
+            $username = $data['username'];
+            //$token_push = $data['token_push'];
+            $photoBase64 = $data['photoBase64'];
+            $userFromDb = $this->checkExistUser($email);
+            if (!$userFromDb) {
+                $file_path_photo = "";
+                if (isset($photoBase64) && !empty($photoBase64)) {
+                    $file_path_photo = \app\common\Utils::base64ToFile($photoBase64, \app\common\Utils::getCurrentMilliseconds());
+                }
+                $user->setPhoto_url($file_path_photo);
+                $user->setUsername($username);
+                $user->setEmail($email);
+                //$user->setToken_push($token_push);
+                if ($this->insertIntoUserTable($user)) {
+                    $isOk = TRUE;
+                    $messageResponse = "Bienvenido";
+                }
+            } else {
+                if ($userFromDb) {
+                    //$this->updatetoken_push($email, $token_push);
+                    $isOk = TRUE;
+                    $messageResponse = "bienvenido";
+                    $user->setEmail($email);
+                    $user->setUsername($userFromDb->username);
+                    $filename = $userFromDb->photo_url;
+                    $user->setPhoto_url($filename);
+                }
+            }
+            if ($isOk) {
+                $response->setContent(json_encode($user->getArray()));
             }
         } catch (Exception $ex) {
             
@@ -252,7 +316,7 @@ class UserController {
 
                 if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                     $verificationController->deleteExistUserVerification($dataUserVerificationResetPwd->email);
-                    $messageResponse= "<h3>Tu contraseña se ha cambiado con éxito</h3>";
+                    $messageResponse = "<h3>Tu contraseña se ha cambiado con éxito</h3>";
                     $mail = new \app\common\Mail();
                     $subject = "Cambia tu contraseña en SeekRaces";
                     $body = "Tu contraseña se ha cambiado con éxito";
@@ -264,7 +328,7 @@ class UserController {
         } catch (\PDOException $pex) {
             
         }
-        
+
         echo $messageResponse;
     }
 

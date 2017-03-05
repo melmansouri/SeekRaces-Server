@@ -10,7 +10,7 @@ class Mail {
 
     public function __construct() {
         $this->mail = new \PHPMailer();
-        $this->mail->SMTPDebug = 2;
+        //$this->mail->SMTPDebug = 2;
         $this->mail->SMTPOptions = array(
             'ssl' => array(
                 'verify_peer' => false,

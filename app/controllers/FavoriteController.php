@@ -48,7 +48,7 @@ class FavoriteController {
             if ($eventos) {
                 $arrayEventosFinal= array();
                 for ($i = 0; $i < count($eventos); $i++) {
-                    $event=new \app\entities\Event();
+                    $event=new \app\entities\Race();
                     $event->setId($eventos[$i]["id"]);
                     $event->setUser($eventos[$i]["user"]);
                     $event->setUserName($eventos[$i]["username"]);

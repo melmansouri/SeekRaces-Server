@@ -20,13 +20,12 @@ class VerificationController {
 
             $query = "INSERT INTO verification(email, pwd, username, photoBase64, token_push, token_verification, creation_datetime)"
                     . " VALUES"
-                    . " (:email, :pwd, :username, :photoBase64, :token_push,:token_verification, :creation_datetime)";
+                    . " (:email, :pwd, :username, :photoBase64,:token_verification, :creation_datetime)";
 
             $dataQuery = array('email' => $user->getEmail(),
                 'pwd' => \app\common\Utils::cifrarBCrypt($user->getPwd()),
                 'username' => $user->getUsername(),
                 'photoBase64' => $user->getPhotoBase64(),
-                'token_push'=>$user->getToken_push(),
                 'token_verification' => $this->token_verification,
                 'creation_datetime' => $creation_dateTime);
 
@@ -86,8 +85,9 @@ class VerificationController {
 
     public function sendMailVerificationRestPwd($addressTo, $nameTo) {
         $mail = new \app\common\Mail();
-        $subject = "Cambia tu contraseña en SeekRaces";
-        $url_confirmacion = "http://192.168.0.102:8080/SeekRaces/api/reset.php?token=" . $this->token_verification;
+        $stringContrasena=htmlentities("contraseña", ENT_QUOTES,'UTF-8');
+        $subject = "Cambia tu $stringContrasena en SeekRaces";
+        $url_confirmacion = "http://192.168.0.101:8080/SeekRaces/api/reset.php?token=" . $this->token_verification;
         $body = $this->generateBodyToSendMailToVerificationResetPwd($url_confirmacion);
         return $mail->sendMail($addressTo, $nameTo, $subject, $body);
     }
@@ -95,30 +95,33 @@ class VerificationController {
     public function sendMailVerification($addressTo, $nameTo) {
         $mail = new \app\common\Mail();
         $subject = "Confirmar registro en SeekRaces";
-        $url_confirmacion = "http://192.168.0.102:8080/SeekRaces/api/user/verification?token=" . $this->token_verification;
+        $url_confirmacion = "http://192.168.0.101:8080/SeekRaces/api/user/verification?token=" . $this->token_verification;
         //$url_confirmacion = "http://192.168.105.18:8080/SeekRaces/api/user/verification?token=" . $this->token_verification;
         $body = $this->generateBodyToSendMailToVerificationSignIn($url_confirmacion);
         return $mail->sendMail($addressTo, $nameTo, $subject, $body);
     }
 
     private function generateBodyToSendMailToVerificationResetPwd($urlConfimation) {
-        $body = "Presiona el siguiente botón para ir al formulario de cambio de contraseña:<br><br>"
-                . "<a style=\"white-space:nowrap;display:block;padding:10px 25px;background:#87AA14;"
+        $stringBoton=htmlentities("botón", ENT_QUOTES,'UTF-8');
+        $body = "Presiona el siguiente $stringBoton para ir al formulario de cambio de contrase&ntilde;a:<br><br>"
+                . "<a style=\"white-space:nowrap;display:block;padding:10px 25px;background:#00BCD4;"
                 . "color:#ffffff;font-family:Helvetica Neue, Arial, sans-serif;"
                 . "font-size:15px;line-height:15px;font-weight:bold;"
                 . "text-decoration:none;border-collapse:collapse;"
                 . "border-color:#82a313;border-style:1px solid;border-radius:3px;\" "
                 . "href=\"$urlConfimation\" target=\"_blank\">
-                        Cambiar la contraseña</a>";
+                        Cambiar la contrase&ntilde;a</a>";
 
         return $body;
     }
 
     private function generateBodyToSendMailToVerificationSignIn($urlConfimation) {
-        $body = "<br />Tienes 24 horas para completar la verificacion "
+        $stringVerificacion=htmlentities("verificación", ENT_QUOTES,'UTF-8');
+        $stringBoton=htmlentities("botón", ENT_QUOTES,'UTF-8');
+        $body = "<br />Tienes 24 horas para completar la $stringVerificacion "
                 . "de la cuenta en 'SeekRaces'."
-                . "<br>Para completar tu registro debes de pulsar el siguiente boton:<br/>"
-                . "<a style=\"white-space:nowrap;display:block;padding:10px 25px;background:#87AA14;"
+                . "<br>Para completar tu registro debes de pulsar en el siguiente $stringBoton:<br/>"
+                . "<a style=\"white-space:nowrap;display:block;padding:10px 25px;background:#00BCD4;"
                 . "color:#ffffff;font-family:Helvetica Neue, Arial, sans-serif;"
                 . "font-size:15px;line-height:15px;font-weight:bold;"
                 . "text-decoration:none;border-collapse:collapse;"

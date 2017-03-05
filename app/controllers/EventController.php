@@ -56,19 +56,25 @@ class EventController {
         try {
             $columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating, "
                     . "(select if(f.event is null,false,true) from favorite f where f.event=e.id and f.user like :user) as favorite";
-            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE e.user <> :user and e.place like :place";
+            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE e.user <> :user and e.place like :place and e.name like :name";
             $dataQuery = array("user" => $data["user"],
-                "place" => "%%");
+                "place" => "%%",
+                "name" => "%%");
             
 
             if (array_key_exists("place", $data)) {
                 $dataQuery["place"] = "%" . $data["place"] . "%";
             }
+            
+            if (array_key_exists("name", $data)) {
+                $dataQuery["name"] = "%" . $data["name"] . "%";
+            }
 
             //if (array_key_exists("distance", $data)) {
-            if ($data["distance"]!=0) {
-                $query .= " AND e.distance = :distance";
-                $dataQuery["distance"] = $data["distance"];
+            if ($data["distanceMin"]!=0 && $data["distanceMax"]!=0) {
+                $query .= " AND e.distance BETWEEN :distanceMin and :distanceMax";
+                $dataQuery["distanceMin"] = $data["distanceMin"];
+                $dataQuery["distanceMax"] = $data["distanceMax"];
             }
 
             if (array_key_exists("date_interval_init", $data) && !array_key_exists("date_interval_end", $data)) {
@@ -87,7 +93,7 @@ class EventController {
             if ($eventos) {
                 $arrayEventosFinal = array();
                 for ($i = 0; $i < count($eventos); $i++) {
-                    $event = new \app\entities\Event();
+                    $event = new \app\entities\Race();
                     $event->setId($eventos[$i]["id"]);
                     $event->setUser($eventos[$i]["user"]);
                     $event->setUserName($eventos[$i]["username"]);
@@ -139,7 +145,7 @@ class EventController {
             if ($eventos) {
                 $arrayEventosFinal = array();
                 for ($i = 0; $i < count($eventos); $i++) {
-                    $event = new \app\entities\Event();
+                    $event = new \app\entities\Race();
                     $event->setId($eventos[$i]["id"]);
                     $event->setUser($eventos[$i]["user"]);
                     $event->setUserName("Mi");
