@@ -15,106 +15,115 @@ class Race{
     private $date_time_init;
     private $web;
     private $isFavorite;
+    private $isFinished;
     
     public function __construct() {
         
     }
-    public function getId() {
+    
+    function getId() {
         return $this->id;
     }
 
-    public function getUser() {
+    function getUser() {
         return $this->user;
     }
 
-    public function getUserName() {
+    function getUserName() {
         return $this->userName;
     }
 
-    public function getName() {
+    function getName() {
         return $this->name;
     }
 
-    public function getDescription() {
+    function getDescription() {
         return $this->description;
     }
 
-    public function getImageBase64() {
+    function getImageBase64() {
         return $this->imageBase64;
     }
 
-    public function getImageName() {
+    function getImageName() {
         return $this->imageName;
     }
 
-    public function getDistance() {
+    function getDistance() {
         return $this->distance;
     }
 
-    public function getPlace() {
+    function getPlace() {
         return $this->place;
     }
 
-    public function getDate_time_init() {
+    function getDate_time_init() {
         return $this->date_time_init;
     }
 
-    public function getWeb() {
+    function getWeb() {
         return $this->web;
     }
 
-    public function getIsFavorite() {
+    function getIsFavorite() {
         return $this->isFavorite;
     }
 
-    public function setId($id) {
+    function getIsFinished() {
+        return $this->isFinished;
+    }
+
+    function setId($id) {
         $this->id = $id;
     }
 
-    public function setUser($user) {
+    function setUser($user) {
         $this->user = $user;
     }
 
-    public function setUserName($userName) {
+    function setUserName($userName) {
         $this->userName = $userName;
     }
 
-    public function setName($name) {
+    function setName($name) {
         $this->name = $name;
     }
 
-    public function setDescription($description) {
+    function setDescription($description) {
         $this->description = $description;
     }
 
-    public function setImageBase64($imageBase64) {
+    function setImageBase64($imageBase64) {
         $this->imageBase64 = $imageBase64;
     }
 
-    public function setImageName($imageName) {
+    function setImageName($imageName) {
         $this->imageName = $imageName;
     }
 
-    public function setDistance($distance) {
+    function setDistance($distance) {
         $this->distance = $distance;
     }
 
-    public function setPlace($place) {
+    function setPlace($place) {
         $this->place = $place;
     }
 
-    public function setDate_time_init($date_time_init) {
+    function setDate_time_init($date_time_init) {
         $this->date_time_init = $date_time_init;
     }
 
-    public function setWeb($web) {
+    function setWeb($web) {
         $this->web = $web;
     }
 
-    public function setIsFavorite($isFavorite) {
+    function setIsFavorite($isFavorite) {
         $this->isFavorite = $isFavorite;
     }
 
+    function setIsFinished($isFinished) {
+        $this->isFinished = $isFinished;
+    }
     
                 
     public function getArray(){
@@ -129,6 +138,7 @@ class Race{
             "place"=> $this->place,
             "date_time_init"=> $this->date_time_init,
             "web"=> $this->web,
-            "isFavorite"=> $this->isFavorite);
+            "isFavorite"=> $this->isFavorite,
+            "isFinished"=> $this->isFinished);
     }
 }

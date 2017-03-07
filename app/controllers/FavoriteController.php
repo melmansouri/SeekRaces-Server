@@ -41,8 +41,8 @@ class FavoriteController {
         $response = new \app\entities\Response();
         $messageResponse = "error al obtener las carreras favoritas";
         $isOk = FALSE;
-        try {$columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web";
-            $query = "SELECT ".$columnsResultQuery." FROM favorite as f inner join event as e inner join user as u on f.event = e.id and e.user = u.email WHERE f.user= :user order by e.date_time_init";
+        try {$columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web,(e.date_time_init < NOW()) as finished";
+            $query = "SELECT ".$columnsResultQuery." FROM favorite as f inner join event as e inner join user as u on f.event = e.id and e.user = u.email WHERE f.user= :user order by e.date_time_init asc";
             $dataQuery = array("user" => $data["email"]);
             
             $eventos=$this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
@@ -64,6 +64,7 @@ class FavoriteController {
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
                     $event->setIsFavorite(1);
+                    $event->setIsFinished($eventos[$i]["finished"]);
                     array_push($arrayEventosFinal, $event->getArray());
                 }
                 $isOk = TRUE;

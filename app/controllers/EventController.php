@@ -55,8 +55,9 @@ class EventController {
         $isOk = FALSE;
         try {
             $columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web, "
-                    . "(select if(f.event is null,false,true) from favorite f where f.event=e.id and f.user like :user) as favorite";
-            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE e.place like :place and e.name like :name and e.date_time_init > NOW() order by e.date_time_init desc";
+                    . "(select if(f.event is null,false,true) from favorite f where f.event=e.id and f.user like :user) as favorite, "
+                    . "(e.date_time_init < NOW()) as finished";
+            $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE e.place like :place and e.name like :name ";
             $dataQuery = array("user" => $data["user"],
                 "place" => "%%",
                 "name" => "%%");
@@ -78,15 +79,15 @@ class EventController {
             }
 
             if (array_key_exists("date_interval_init", $data) && !array_key_exists("date_interval_end", $data)) {
-                $query .= " AND e.date_time_init > :date_interval_init";
+                $query .= " AND e.date_time_init > :date_interval_init order by e.date_time_init asc";
                 $dataQuery["date_interval_init"] = $data["date_interval_init"];
             } else if (array_key_exists("date_interval_init", $data) && array_key_exists("date_interval_end", $data)) {
-                $query .= " AND e.date_time_init between :date_interval_init AND :date_interval_end";
+                $query .= " AND e.date_time_init between :date_interval_init AND :date_interval_end order by e.date_time_init asc";
                 $dataQuery["date_interval_init"] = $data["date_interval_init"];
                 $dataQuery["date_interval_end"] = $data["date_interval_end"];
-            }/*else if(!array_key_exists("date_interval_init", $data) && !array_key_exists("date_interval_end", $data)){
-                $query.=" AND e.date_time_init > NOW()";
-            }*/
+            }else if(!array_key_exists("date_interval_init", $data) && !array_key_exists("date_interval_end", $data)){
+                $query.=" AND e.date_time_init > NOW() order by e.date_time_init asc";
+            }
             echo $query;
             $eventos = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
 
@@ -108,6 +109,7 @@ class EventController {
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
                     $event->setIsFavorite($eventos[$i]["favorite"]);
+                    $event->setIsFinished($eventos[$i]["finished"]);
                     array_push($arrayEventosFinal, $event->getArray());
                 }
                 $isOk = TRUE;
@@ -186,8 +188,8 @@ class EventController {
         $messageResponse = "Problemas para obtener tus carreras. Intentalo más tarde";
         $isOk = FALSE;
         try {
-            $columnsResultQuery="e.id,e.user,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web";
-            $query = "SELECT ".$columnsResultQuery ." FROM event e WHERE e.user = :user order by e.date_time_init desc";
+            $columnsResultQuery="e.id,e.user,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web,(e.date_time_init < NOW()) as finished";
+            $query = "SELECT ".$columnsResultQuery ." FROM event e WHERE e.user = :user order by e.date_time_init asc";
             $dataQuery = array("user" => $data["email"]);
             $eventos = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
 
@@ -208,6 +210,7 @@ class EventController {
                     $event->setPlace($eventos[$i]["place"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
+                    $event->setIsFinished($eventos[$i]["finished"]);
                     /*$event->setNum_reviews($eventos[$i]["num_reviews"]);
                     $event->setTotal_scores($eventos[$i]["total_scores"]);
                     $event->setRating($eventos[$i]["rating"]);*/
