@@ -20,7 +20,7 @@ class UserController {
             $user->setPwd($data['pwd']);
             $user->setUsername($data['username']);
             $user->setPhotoBase64($data['photoBase64']);
-            $user->setCountry($data['place']);
+            $user->setPlace($data['place']);
             $user->setToken_push($data['token_push']);
 
             if ($this->checkExistUser($user->getEmail())) {
@@ -84,13 +84,14 @@ class UserController {
     public function insertIntoUserTable($user) {
         $result = FALSE;
         try {
-            $query = "INSERT INTO user(email, username, photo_url)"
+            $query = "INSERT INTO user(email, username, photo_url, place)"
                     . " VALUES"
-                    . " (:email, :username, :photo_url)";
+                    . " (:email, :username, :photo_url, :place)";
 
             $dataQuery = array('email' => $user->getEmail(),
                 'username' => $user->getUsername(),
-                'photo_url' => $user->getPhoto_url());
+                'photo_url' => $user->getPhoto_url(),
+                'place' => $user->getPlace());
             $pwd = $user->getPwd();
             if (!empty($pwd) && isset($pwd)) {
                 $query = "INSERT INTO user(email, pwd, username, photo_url, place, token_push)"

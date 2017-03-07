@@ -54,7 +54,7 @@ class EventController {
         $messageResponse = "Problemas para obtener las carreras. Intentalo más tarde";
         $isOk = FALSE;
         try {
-            $columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web, "
+            $columnsResultQuery="e.id,e.user,u.username,u.photo_url,u.place,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web, "
                     . "(select if(f.event is null,false,true) from favorite f where f.event=e.id and f.user like :user) as favorite, "
                     . "(e.date_time_init < NOW()) as finished";
             $query = "SELECT ".$columnsResultQuery ." FROM event e inner join user u ON e.user=u.email WHERE e.place like :place and e.name like :name ";
@@ -96,7 +96,7 @@ class EventController {
                 for ($i = 0; $i < count($eventos); $i++) {
                     $event = new \app\entities\Race();
                     $event->setId($eventos[$i]["id"]);
-                    $event->setUser($eventos[$i]["user"]);
+                    //$event->setUser($eventos[$i]["user"]);
                     $event->setUserName($eventos[$i]["username"]);
                     $event->setName($eventos[$i]["name"]);
                     $event->setDescription($eventos[$i]["description"]);
@@ -110,6 +110,12 @@ class EventController {
                     $event->setWeb($eventos[$i]["web"]);
                     $event->setIsFavorite($eventos[$i]["favorite"]);
                     $event->setIsFinished($eventos[$i]["finished"]);
+                    $user=new \app\entities\User();
+                    $user->setEmail($eventos[$i]["user"]);
+                    $user->setPhoto_url($eventos[$i]["photo_url"]);
+                    $user->setPlace($eventos[$i]["place"]);
+                    $user->setUsername($eventos[$i]["username"]);
+                    $event->setUser($user->getArray());
                     array_push($arrayEventosFinal, $event->getArray());
                 }
                 $isOk = TRUE;
