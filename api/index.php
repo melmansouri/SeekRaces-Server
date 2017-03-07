@@ -2,8 +2,8 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-require '../vendor/autoload.php';
-require '../vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
+require './vendor/autoload.php';
+require './vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
 /**
  * Permite la inyeccion de nuestros propios ficheros .php
  * ahorrandonos usar require_one or require or include or include_once 
@@ -27,7 +27,7 @@ spl_autoload_register(function ($classname) {
     }
     $pathname = $pathname . ".php";
     $dir = dirname(__DIR__);
-    require_once( $dir . $pathname);
+    require_once(__DIR__ . $pathname);
 });
 
 $config['displayErrorDetails'] = true;
@@ -48,6 +48,8 @@ $app->put('/user', 'editUser');
 $app->get('/user/{email}/forgotPassword', 'forgotPwd');
 
 $app->get('/event', 'getEvents');
+
+$app->get('/event/finished', 'getFinishedEvents');
 
 $app->get('/user/{email}/event', 'getOwnEvents');
 
@@ -75,7 +77,7 @@ $app->run();
 
 function index() {
     echo "
-        <h1>SEEKRACES</h1>
+        <h1>API SEEKRACES</h1>
     ";
 }
 
@@ -110,7 +112,7 @@ function editUser(Request $request, Response $response) {
 
 function forgotPwd(Request $request, Response $response,$args){
     $email = $args['email'];
-    $userController=new app\Controllers\UserController(app\connection\ConnectionPDO::getInstance());
+    $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
     $result=$userController->forgotPwd($email);
     return json_encode($result->getArray());
 }
@@ -127,6 +129,12 @@ function getEvents(Request $request, Response $response) {
     //$data = $request->getParsedBody();
     $eventController=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
     $result=$eventController->getEvents($data);
+    return json_encode($result->getArray());
+}
+
+function getFinishedEvents(Request $request, Response $response) {
+    $eventController=new app\controllers\EventController(app\connection\ConnectionPDO::getInstance());
+    $result=$eventController->getFinishedEvents();
     return json_encode($result->getArray());
 }
 

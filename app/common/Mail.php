@@ -24,7 +24,6 @@ class Mail {
         $this->mail->Port = 587;
         $this->mail->SMTPSecure = 'tls';
 
-
         $this->mail->Username = $this->username;
         $this->mail->Password = $this->pwd;
 
@@ -34,11 +33,15 @@ class Mail {
     }
 
     public function sendMail($addressTo, $nameTo, $subject, $body) {
-        $this->mail->addAddress($addressTo, $nameTo);
+        try{
+            $this->mail->addAddress($addressTo, $nameTo);
         $this->mail->Subject = $subject;
         $this->mail->Body = $body;
 
         return $this->mail->send();
+        } catch (Exception $ex) {
+            throw $ex;
+        }
     }
 
 }

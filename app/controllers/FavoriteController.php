@@ -25,7 +25,9 @@ class FavoriteController {
                 $messageResponse = "La carrera ha sido añadida como favorita";
             }
         } catch (Exception $ex) {
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
+            print $pex->getMessage();
         }
 
 
@@ -39,8 +41,8 @@ class FavoriteController {
         $response = new \app\entities\Response();
         $messageResponse = "error al obtener las carreras favoritas";
         $isOk = FALSE;
-        try {$columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web,e.num_reviews,e.total_scores,e.rating";
-            $query = "SELECT ".$columnsResultQuery." FROM favorite as f inner join event as e inner join user as u on f.event = e.id and e.user = u.email WHERE f.user= :user";
+        try {$columnsResultQuery="e.id,e.user,u.username,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web";
+            $query = "SELECT ".$columnsResultQuery." FROM favorite as f inner join event as e inner join user as u on f.event = e.id and e.user = u.email WHERE f.user= :user order by e.date_time_init";
             $dataQuery = array("user" => $data["email"]);
             
             $eventos=$this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
@@ -61,9 +63,6 @@ class FavoriteController {
                     $event->setPlace($eventos[$i]["place"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
-                    $event->setNum_reviews($eventos[$i]["num_reviews"]);
-                    $event->setTotal_scores($eventos[$i]["total_scores"]);
-                    $event->setRating($eventos[$i]["rating"]);
                     $event->setIsFavorite(1);
                     array_push($arrayEventosFinal, $event->getArray());
                 }
@@ -71,10 +70,13 @@ class FavoriteController {
                 $messageResponse="";
                 $response->setContent(json_encode($arrayEventosFinal));
             }else{
+                $isOk = TRUE;
                 $messageResponse="No tienes carreras favoritas.";
             }
         } catch (Exception $ex) {
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
+            print $pex->getMessage();
         }
 
 
@@ -97,7 +99,9 @@ class FavoriteController {
                 $messageResponse = "Se ha eliminado con éxito de favoritos";
             }
         } catch (Exception $ex) {
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
+            print $pex->getMessage();
         }
 
 

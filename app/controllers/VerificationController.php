@@ -18,14 +18,16 @@ class VerificationController {
             $this->token_verification = \app\common\Utils::generateTokenVerification();
             $creation_dateTime = \app\common\Utils::nowDateTime();
 
-            $query = "INSERT INTO verification(email, pwd, username, photoBase64, token_push, token_verification, creation_datetime)"
-                    . " VALUES"
-                    . " (:email, :pwd, :username, :photoBase64,:token_verification, :creation_datetime)";
+            $query = "INSERT INTO verification (email, pwd, username, photoBase64, place, token_push, token_verification, creation_datetime)"
+                    . " VALUES "
+                    . "(:email, :pwd, :username, :photoBase64, :place, :token_push,:token_verification, :creation_datetime)";
 
             $dataQuery = array('email' => $user->getEmail(),
                 'pwd' => \app\common\Utils::cifrarBCrypt($user->getPwd()),
                 'username' => $user->getUsername(),
                 'photoBase64' => $user->getPhotoBase64(),
+                'place' => $user->getPlace(),
+                'token_push' => $user->getToken_push(),
                 'token_verification' => $this->token_verification,
                 'creation_datetime' => $creation_dateTime);
 
@@ -40,7 +42,8 @@ class VerificationController {
     }
 
     public function insertUserVerificationToRestorePwd($email) {
-        $this->deleteExistUserVerification($email);
+        try {
+            $this->deleteExistUserVerification($email);
 
         $this->token_verification = \app\common\Utils::generateTokenVerification();
         $creation_dateTime = \app\common\Utils::nowDateTime();
@@ -56,15 +59,26 @@ class VerificationController {
         $result = $this->connectionDb->executeQueryWithData($query, $dataQuery);
 
         return $result;
+        } catch (Exception $ex) {
+            throw $ex;
+        }catch (\PDOException $pex) {
+            throw $pex;
+        }
     }
 
     public function deleteExistUserVerification($email) {
-        $query = "delete from verification where email like :email";
+        try{
+            $query = "delete from verification where email like :email";
         $dataQuery = array('email' => $email);
 
         $result = $this->connectionDb->executeQueryWithData($query, $dataQuery);
 
         return $result;
+        } catch (Exception $ex) {
+            throw $ex;
+        }catch (\PDOException $pex) {
+            throw $pex;
+        }
     }
 
     public function getDataVerificationUser($token) {
@@ -84,21 +98,29 @@ class VerificationController {
     }
 
     public function sendMailVerificationRestPwd($addressTo, $nameTo) {
-        $mail = new \app\common\Mail();
-        $stringContrasena=htmlentities("contraseña", ENT_QUOTES,'UTF-8');
-        $subject = "Cambia tu $stringContrasena en SeekRaces";
-        $url_confirmacion = "http://192.168.0.101:8080/SeekRaces/api/reset.php?token=" . $this->token_verification;
+        try{
+            $mail = new \app\common\Mail();
+        $subject = "Cambia tu password en SeekRaces";
+        $url_confirmacion = "https://seekraces.tk/SeekRaces/api/reset.php?token=" . $this->token_verification;
         $body = $this->generateBodyToSendMailToVerificationResetPwd($url_confirmacion);
         return $mail->sendMail($addressTo, $nameTo, $subject, $body);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
     }
 
     public function sendMailVerification($addressTo, $nameTo) {
-        $mail = new \app\common\Mail();
+        try{
+            $mail = new \app\common\Mail();
         $subject = "Confirmar registro en SeekRaces";
-        $url_confirmacion = "http://192.168.0.101:8080/SeekRaces/api/user/verification?token=" . $this->token_verification;
+        $url_confirmacion = "https://seekraces.tk/SeekRaces/api/user/verification?token=" . $this->token_verification;
         //$url_confirmacion = "http://192.168.105.18:8080/SeekRaces/api/user/verification?token=" . $this->token_verification;
         $body = $this->generateBodyToSendMailToVerificationSignIn($url_confirmacion);
         return $mail->sendMail($addressTo, $nameTo, $subject, $body);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+        
     }
 
     private function generateBodyToSendMailToVerificationResetPwd($urlConfimation) {

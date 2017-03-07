@@ -7,7 +7,7 @@ class User{
     private $username;
     private $photo_url;
     private $photoBase64;
-    private $country;
+    private $place;
     private $token_push;
     
     public function __construct() {
@@ -33,8 +33,8 @@ class User{
         return $this->photoBase64;
     }
 
-    public function getCountry() {
-        return $this->country;
+    public function getPlace() {
+        return $this->place;
     }
 
     public function getToken_push() {
@@ -61,14 +61,15 @@ class User{
         $this->photoBase64 = $photoBase64;
     }
 
-    public function setCountry($country) {
-        $this->country = $country;
+    public function setPlace($place) {
+        $this->place = $place;
     }
 
     public function setToken_push($token_push) {
         $this->token_push = $token_push;
     }
 
+    
                     
     public function getArray(){
         return array("email"=> $this->email,
@@ -76,7 +77,7 @@ class User{
             "username"=> $this->username,
             "photo_url"=> $this->photo_url,
             "photoBase64"=> $this->photoBase64,
-            "country"=> $this->country,
+            "place"=> $this->place,
             "token_push"=> $this->token_push);
     }
 }

@@ -29,9 +29,9 @@ class OpinionController {
                 $messageResponse = "Gracias por comentar";
             }
         } catch (Exception $ex) {
-            
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
-            
+            print $pex->getMessage();
         }
 
 
@@ -46,7 +46,7 @@ class OpinionController {
         $messageResponse = "Problemas para obtener los comentarios";
         $isOk = FALSE;
         try {
-            $query = "SELECT u.username,u.email,u.photo_url,ev.score,ev.comment,ev.date_opinion FROM opinion as ev inner join user as u on ev.user=u.email WHERE ev.event = :id";
+            $query = "SELECT u.username,u.email,u.photo_url,ev.score,ev.comment,ev.date_opinion FROM opinion as ev inner join user as u on ev.user=u.email WHERE ev.event = :id order by date_opinion desc";
             $dataQuery = array("id" => (int) $data["id"]);
 
             $eventVotes = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
@@ -70,9 +70,9 @@ class OpinionController {
                 $messageResponse = "No hay opiniones registradas para esta carrera";
             }
         } catch (Exception $ex) {
-            
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
-            
+            print $pex->getMessage();
         }
 
         $response->setIsOk($isOk);
@@ -101,9 +101,9 @@ class OpinionController {
                 $messageResponse="";
             }
         } catch (Exception $ex) {
-            
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
-            
+            print $pex->getMessage();
         }
 
 
@@ -129,9 +129,9 @@ class OpinionController {
                 $messageResponse="";
             }
         } catch (Exception $ex) {
-            
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
-            
+            print $pex->getMessage();
         }
 
 

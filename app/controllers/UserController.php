@@ -20,8 +20,8 @@ class UserController {
             $user->setPwd($data['pwd']);
             $user->setUsername($data['username']);
             $user->setPhotoBase64($data['photoBase64']);
-            /*$user->setCountry($data['country']);
-            $user->setToken_push($data['token_push']);*/
+            $user->setCountry($data['place']);
+            $user->setToken_push($data['token_push']);
 
             if ($this->checkExistUser($user->getEmail())) {
                 $messageResponse = "Ya existe un usuario con este correo";
@@ -37,9 +37,9 @@ class UserController {
                 }
             }
         } catch (Exception $ex) {
-            
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
-            
+            print $pex->getMessage();
         }
 
         $response->setMessage($messageResponse);
@@ -63,8 +63,8 @@ class UserController {
                     $user->setPhoto_url($file_path_photo);
                 }
 
-                /*$user->setCountry($dataUserVerification->country);
-                $user->setToken_push($dataUserVerification->token_push);*/
+                $user->setPlace($dataUserVerification->place);
+                $user->setToken_push($dataUserVerification->token_push);
                 if ($this->insertIntoUserTable($user)) {
                     $verification->deleteExistUserVerification($user->getEmail());
                     $messageResponse = '<h3>Bienvenido a SeekRaces</h3>';
@@ -72,34 +72,43 @@ class UserController {
                 }
             }
         } catch (Exception $ex) {
+            print $ex->getMessage();
             $messageResponse = '<h3>Error en la verificación</h3>';
         } catch (\PDOException $pex) {
+            print $pex->getMessage();
             $messageResponse = '<h3>Error en la verificación</h3>';
         }
         return $messageResponse;
     }
 
     public function insertIntoUserTable($user) {
-        $query = "INSERT INTO user(email, username, photo_url)"
-                . " VALUES"
-                . " (:email, :username, :photo_url)";
+        $result = FALSE;
+        try {
+            $query = "INSERT INTO user(email, username, photo_url)"
+                    . " VALUES"
+                    . " (:email, :username, :photo_url)";
 
-        $dataQuery = array('email' => $user->getEmail(),
-            'username' => $user->getUsername(),
-            'photo_url' => $user->getPhoto_url());
-        $pwd=$user->getPwd();
-        if (!empty($pwd) && isset($pwd)) {
-            $query = "INSERT INTO user(email, pwd, username, photo_url)"
-                . " VALUES"
-                . " (:email, :pwd, :username, :photo_url)";
+            $dataQuery = array('email' => $user->getEmail(),
+                'username' => $user->getUsername(),
+                'photo_url' => $user->getPhoto_url());
+            $pwd = $user->getPwd();
+            if (!empty($pwd) && isset($pwd)) {
+                $query = "INSERT INTO user(email, pwd, username, photo_url, place, token_push)"
+                        . " VALUES"
+                        . " (:email, :pwd, :username,:photo_url, :place, :token_push)";
 
-        $dataQuery = array('email' => $user->getEmail(),
-            'pwd' => $user->getPwd(),
-            'username' => $user->getUsername(),
-            'photo_url' => $user->getPhoto_url());
+                $dataQuery = array('email' => $user->getEmail(),
+                    'pwd' => $user->getPwd(),
+                    'username' => $user->getUsername(),
+                    'photo_url' => $user->getPhoto_url(),
+                    'place' => $user->getPlace(),
+                    'token_push' => $user->getToken_push());
+            }
+
+            $result = $this->connectionDb->executeQueryWithData($query, $dataQuery);
+        } catch (Exception $exc) {
+            print $exc->getMessage();
         }
-        
-        $result = $this->connectionDb->executeQueryWithData($query, $dataQuery);
 
         return $result;
     }
@@ -116,14 +125,14 @@ class UserController {
             try {
                 $email = $data['email'];
                 $pwd = $data['pwd'];
-                //$token_push = $data['token_push'];
+                $token_push = $data['token_push'];
                 $userFromDb = $this->checkExistUser($email);
                 if (!$userFromDb) {
                     $messageResponse = "Este usuario no existe.";
                 } else {
 
                     if ($userFromDb) {
-                        //$this->updatetoken_push($email, $token_push);
+                        $this->updatetoken_push($email, $token_push);
                         $user->setEmail($email);
                         $pwdhash = $userFromDb->pwd;
                         $messageResponse = "Las credenciales son incorrectas";
@@ -133,6 +142,7 @@ class UserController {
                             $user->setUsername($userFromDb->username);
                             $filename = $userFromDb->photo_url;
                             $user->setPhoto_url($filename);
+                            $user->setPlace($userFromDb->place);
                             //$base64= \app\common\Utils::fileToBase64($filename);
                             //$user->setPhotoBase64($base64);
                             $response->setContent(json_encode($user->getArray()));
@@ -140,9 +150,9 @@ class UserController {
                     }
                 }
             } catch (Exception $ex) {
-                
+                print $ex->getMessage();
             } catch (\PDOException $pex) {
-                
+                print $pex->getMessage();
             }
 
             $response->setMessage($messageResponse);
@@ -160,7 +170,7 @@ class UserController {
         try {
             $email = $data['email'];
             $username = $data['username'];
-            //$token_push = $data['token_push'];
+            $token_push = $data['token_push'];
             $photoBase64 = $data['photoBase64'];
             $userFromDb = $this->checkExistUser($email);
             if (!$userFromDb) {
@@ -171,14 +181,14 @@ class UserController {
                 $user->setPhoto_url($file_path_photo);
                 $user->setUsername($username);
                 $user->setEmail($email);
-                //$user->setToken_push($token_push);
+                $user->setToken_push($token_push);
                 if ($this->insertIntoUserTable($user)) {
                     $isOk = TRUE;
                     $messageResponse = "Bienvenido";
                 }
             } else {
                 if ($userFromDb) {
-                    //$this->updatetoken_push($email, $token_push);
+                    $this->updatetoken_push($email, $token_push);
                     $isOk = TRUE;
                     $messageResponse = "bienvenido";
                     $user->setEmail($email);
@@ -191,9 +201,9 @@ class UserController {
                 $response->setContent(json_encode($user->getArray()));
             }
         } catch (Exception $ex) {
-            
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
-            
+            print $pex->getMessage();
         }
 
         $response->setMessage($messageResponse);
@@ -220,9 +230,9 @@ class UserController {
                 }
             }
         } catch (Exception $ex) {
-            
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
-            
+            print $pex->getMessage();
         }
 
         $response->setMessage($messageResponse);
@@ -235,13 +245,14 @@ class UserController {
         $messageResponse = "No se ha podido editar tu perfil";
         $isOk = FALSE;
         try {
-            $updateQuery = "UPDATE user SET username = :username";
+            $updateQuery = "UPDATE user SET username = :username, place= :place";
             $whereQuery = " WHERE "
                     . "email = :email";
 
             $dataQuery = array(
                 "email" => $data["email"],
-                "username" => $data["username"]);
+                "username" => $data["username"],
+                "place" => $data["place"]);
 
             $imageName = "";
             if (isset($data["photoBase64"]) && !empty($data["photoBase64"])) {
@@ -258,9 +269,9 @@ class UserController {
                 $messageResponse = "Tu perfil ha sido editado con éxito";
             }
         } catch (Exception $ex) {
-            
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
-            
+            print $pex->getMessage();
         }
 
 
@@ -324,9 +335,9 @@ class UserController {
                 }
             }
         } catch (Exception $ex) {
-            
+            print $ex->getMessage();
         } catch (\PDOException $pex) {
-            
+            print $pex->getMessage();
         }
 
         echo $messageResponse;
