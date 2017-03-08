@@ -212,6 +212,102 @@ class UserController {
         return $response;
     }
 
+    public function follow($data) {
+        $response = new \app\entities\Response();
+        $messageResponse = 'Error en el servidor';
+        $isOk = FALSE;
+        try {
+            $userFollower = $data['userFollower'];
+            $userFollowed = $data['userFollowed'];
+            $sentNotificacion = $data['sentNotificacion'];
+            $userFromDbFollower = $this->checkExistUser($userFollower);
+            $userFromDbFollowed = $this->checkExistUser($userFollowed);
+            if (!$userFromDbFollower || !$userFromDbFollowed) {
+                $messageResponse = "Problemas para seguir a este usuarios.";
+            } else {
+                $query = "INSERT INTO follow(follower_user, followed_user, sentNotificacion)"
+                        . " VALUES"
+                        . " (:follower_user, :followed_user, :sentNotificacion)";
+
+                $dataQuery = array('follower_user' => $userFollower,
+                    'followed_user' => $userFollowed,
+                    'sentNotificacion' => $sentNotificacion);
+
+
+                if($this->connectionDb->executeQueryWithData($query, $dataQuery)){
+                    $isOk=TRUE;
+                }
+            }
+        } catch (Exception $ex) {
+            print $ex->getMessage();
+        } catch (\PDOException $pex) {
+            print $pex->getMessage();
+        }
+
+        $response->setMessage($messageResponse);
+        $response->setIsOk($isOk);
+
+        return $response;
+    }
+    
+    public function unFollow($data) {
+        $response = new \app\entities\Response();
+        $messageResponse = "Error al intentar dejar de seguir a este usuario";
+        $isOk = FALSE;
+        try {
+            $query = "DELETE FROM follow WHERE follower_user = :follower_user and followed_user = :followed_user";
+            $dataQuery = array("follower_user" => $data["follower"],
+                "followed_user"=>$data["followed"]);
+            if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
+                $isOk = TRUE;
+                $messageResponse = "unFollow";
+            }
+        } catch (Exception $ex) {
+            print $ex->getMessage();
+        } catch (\PDOException $pex) {
+            print $pex->getMessage();
+        }
+        $response->setIsOk($isOk);
+        $response->setMessage($messageResponse);
+
+        return $response;
+    }
+    
+    public function updateFollowToSentNotification($data) {
+        $response = new \app\entities\Response();
+        $messageResponse = "Error en el servidor pada dejar de recibir las notificaciones de este usuario";
+        $isOk = FALSE;
+        try {
+            $userFollower = $data['userFollower'];
+            $userFollowed = $data['userFollowed'];
+            $sentNotificacion = $data['sentNotificacion'];
+            $updateQuery = "UPDATE follow SET sentNotificacion= :sentNotificacion";
+            $whereQuery = " WHERE "
+                    . "follower_user = :follower_user and followed_user = :followed_user";
+
+            $dataQuery = array('follower_user' => $userFollower,
+                    'followed_user' => $userFollowed,
+                    'sentNotificacion' => $sentNotificacion);
+            
+            $query = $updateQuery . $whereQuery;
+
+
+            if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
+                $isOk = TRUE;
+            }
+        } catch (Exception $ex) {
+            print $ex->getMessage();
+        } catch (\PDOException $pex) {
+            print $pex->getMessage();
+        }
+
+
+        $response->setIsOk($isOk);
+        $response->setMessage($messageResponse);
+
+        return $response;
+    }
+
     public function forgotPwd($email) {
         $response = new \app\entities\Response();
         $messageResponse = 'Problemas para recuperar la contraseña';

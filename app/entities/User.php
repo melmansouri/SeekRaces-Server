@@ -9,66 +9,86 @@ class User{
     private $photoBase64;
     private $place;
     private $token_push;
+    private $isFollowed;
+    private $isSentNotificacion;
     
     public function __construct() {
         
     }
-    public function getEmail() {
+    
+    function getEmail() {
         return $this->email;
     }
 
-    public function getPwd() {
+    function getPwd() {
         return $this->pwd;
     }
 
-    public function getUsername() {
+    function getUsername() {
         return $this->username;
     }
 
-    public function getPhoto_url() {
+    function getPhoto_url() {
         return $this->photo_url;
     }
 
-    public function getPhotoBase64() {
+    function getPhotoBase64() {
         return $this->photoBase64;
     }
 
-    public function getPlace() {
+    function getPlace() {
         return $this->place;
     }
 
-    public function getToken_push() {
+    function getToken_push() {
         return $this->token_push;
     }
 
-    public function setEmail($email) {
+    function getIsFollowed() {
+        return $this->isFollowed;
+    }
+
+    function getIsSentNotificacion() {
+        return $this->isSentNotificacion;
+    }
+
+    function setEmail($email) {
         $this->email = $email;
     }
 
-    public function setPwd($pwd) {
+    function setPwd($pwd) {
         $this->pwd = $pwd;
     }
 
-    public function setUsername($username) {
+    function setUsername($username) {
         $this->username = $username;
     }
 
-    public function setPhoto_url($photo_url) {
+    function setPhoto_url($photo_url) {
         $this->photo_url = $photo_url;
     }
 
-    public function setPhotoBase64($photoBase64) {
+    function setPhotoBase64($photoBase64) {
         $this->photoBase64 = $photoBase64;
     }
 
-    public function setPlace($place) {
+    function setPlace($place) {
         $this->place = $place;
     }
 
-    public function setToken_push($token_push) {
+    function setToken_push($token_push) {
         $this->token_push = $token_push;
     }
 
+    function setIsFollowed($isFollowed) {
+        $this->isFollowed = $isFollowed;
+    }
+
+    function setIsSentNotificacion($isSentNotificacion) {
+        $this->isSentNotificacion = $isSentNotificacion;
+    }
+
+    
     
                     
     public function getArray(){
@@ -78,7 +98,9 @@ class User{
             "photo_url"=> $this->photo_url,
             "photoBase64"=> $this->photoBase64,
             "place"=> $this->place,
-            "token_push"=> $this->token_push);
+            "token_push"=> $this->token_push,
+            "isFollowed"=>$this->isFollowed,
+            "isSentNotificacion"=>$this->isSentNotificacion);
     }
 }
 

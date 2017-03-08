@@ -43,6 +43,12 @@ $app->get('/user/verification', 'verificationSignIn');
 
 $app->post('/user/login', 'login');
 
+$app->post('/user/follow', 'follow');
+
+$app->delete('/follow/{follower}/{followed}', 'unFollow');
+
+$app->put('/user/follow', 'updateFollowToSentNotification');
+
 $app->put('/user', 'editUser');
 
 $app->get('/user/{email}/forgotPassword', 'forgotPwd');
@@ -100,6 +106,26 @@ function login(Request $request, Response $response){
     $data = $request->getParsedBody();
     $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
     $result=$userController->login($data);
+    return json_encode($result->getArray());
+}
+
+function follow(Request $request, Response $response){
+    $data = $request->getParsedBody();
+    $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
+    $result=$userController->follow($data);
+    return json_encode($result->getArray());
+}
+
+function unFollow(Request $request, Response $response,$args){
+    $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
+    $result=$userController->unFollow($args);
+    return json_encode($result->getArray());
+}
+
+function updateFollowToSentNotification(Request $request, Response $response) {
+    $data = $request->getParsedBody();
+    $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
+    $result=$userController->updateFollowToSentNotification($data);
     return json_encode($result->getArray());
 }
 

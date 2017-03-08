@@ -101,7 +101,7 @@ class VerificationController {
         try{
             $mail = new \app\common\Mail();
         $subject = "Cambia tu password en SeekRaces";
-        $url_confirmacion = "https://seekraces.tk/SeekRaces/api/reset.php?token=" . $this->token_verification;
+        $url_confirmacion = "https://seekraces.tk/SeekRaces/reset.php?token=" . $this->token_verification;
         $body = $this->generateBodyToSendMailToVerificationResetPwd($url_confirmacion);
         return $mail->sendMail($addressTo, $nameTo, $subject, $body);
         } catch (Exception $ex) {

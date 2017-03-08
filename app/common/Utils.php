@@ -67,4 +67,32 @@ class Utils {
         return round(microtime(true) * 1000);
     }
 
+    public static function send_notification($tokens, $message) {
+        try {
+            $url = 'https://fcm.googleapis.com/fcm/send';
+            $fields = array(
+                'registration_ids' => $tokens,
+                'data' => $message
+            );
+            $headers = array(
+                'Authorization:key = AIzaSyDmZRb02-RcKK3I080i5D7nqkMpfOJLHVU ',
+                'Content-Type: application/json'
+            );
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+            $result = curl_exec($ch);
+            curl_close($ch);
+            return $result;
+        } catch (Exception $ex) {
+            print $ex->getMessage();
+            throw $ex;
+        }
+    }
+
 }
