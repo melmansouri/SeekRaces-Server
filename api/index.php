@@ -45,6 +45,8 @@ $app->post('/user/login', 'login');
 
 $app->post('/user/follow', 'follow');
 
+$app->post('/user/{email}/followed', 'getUsersFollowed');
+
 $app->delete('/follow/{follower}/{followed}', 'unFollow');
 
 $app->put('/user/follow', 'updateFollowToSentNotification');
@@ -126,6 +128,12 @@ function updateFollowToSentNotification(Request $request, Response $response) {
     $data = $request->getParsedBody();
     $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
     $result=$userController->updateFollowToSentNotification($data);
+    return json_encode($result->getArray());
+}
+
+function getUsersFollowed(Request $request, Response $response,$args) {
+    $userController=new app\controllers\UserController(app\connection\ConnectionPDO::getInstance());
+    $result=$userController->getUsersFollowed($args);
     return json_encode($result->getArray());
 }
 

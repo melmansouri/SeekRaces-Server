@@ -139,9 +139,9 @@ class EventController {
                     $event->setName($eventos[$i]["name"]);
                     $event->setDescription($eventos[$i]["description"]);
                     $imageName = $eventos[$i]["image"];
-                    $base64 = \app\common\Utils::fileToBase64($imageName);
-                    //$event->setImageName($imageName);
-                    $event->setImageBase64($base64);
+                    //$base64 = \app\common\Utils::fileToBase64($imageName);
+                    $event->setImageName($imageName);
+                    //$event->setImageBase64($base64);
                     $event->setDistance($eventos[$i]["distance"]);
                     $event->setPlace($eventos[$i]["place"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
@@ -243,8 +243,11 @@ class EventController {
         $messageResponse = "Problemas para obtener tus carreras. Intentalo más tarde";
         $isOk = FALSE;
         try {
-            $columnsResultQuery = "e.id,e.user,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web,(e.date_time_init < NOW()) as finished";
-            $query = "SELECT " . $columnsResultQuery . " FROM event e WHERE e.user = :user order by e.date_time_init asc";
+            $columnsResultQuery = "e.id,e.user,u.username,u.photo_url,u.place, "
+                    . "e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web, "
+                    . "(e.date_time_init < NOW()) as finished";
+            //$columnsResultQuery = "e.id,e.user,e.name,e.description,e.image,e.distance,e.place,e.date_time_init,e.web,(e.date_time_init < NOW()) as finished";
+            $query = "SELECT " . $columnsResultQuery . " FROM event e inner join user u on e.user=u.email WHERE e.user = :user order by e.date_time_init asc";
             $dataQuery = array("user" => $data["email"]);
             $eventos = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
 
@@ -253,22 +256,25 @@ class EventController {
                 for ($i = 0; $i < count($eventos); $i++) {
                     $event = new \app\entities\Race();
                     $event->setId($eventos[$i]["id"]);
-                    $event->setUser($eventos[$i]["user"]);
+                    //$event->setUser($eventos[$i]["user"]);
                     $event->setUserName("Mi");
                     $event->setName($eventos[$i]["name"]);
                     $event->setDescription($eventos[$i]["description"]);
                     $imageName = $eventos[$i]["image"];
-                    $base64 = \app\common\Utils::fileToBase64($imageName);
-                    $event->setImageBase64($base64);
-                    //$event->setImageName($imageName);
+                    //$base64 = \app\common\Utils::fileToBase64($imageName);
+                    $event->setImageName($imageName);
+                    //$event->setImageBase64($base64);
                     $event->setDistance($eventos[$i]["distance"]);
                     $event->setPlace($eventos[$i]["place"]);
                     $event->setDate_time_init($eventos[$i]["date_time_init"]);
                     $event->setWeb($eventos[$i]["web"]);
                     $event->setIsFinished($eventos[$i]["finished"]);
-                    /* $event->setNum_reviews($eventos[$i]["num_reviews"]);
-                      $event->setTotal_scores($eventos[$i]["total_scores"]);
-                      $event->setRating($eventos[$i]["rating"]); */
+                    $user = new \app\entities\User();
+                    $user->setEmail($eventos[$i]["user"]);
+                    $user->setPhoto_url($eventos[$i]["photo_url"]);
+                    $user->setPlace($eventos[$i]["place"]);
+                    $user->setUsername($eventos[$i]["username"]);
+                    $event->setUser(json_encode($user->getArray()));
                     array_push($arrayEventosFinal, $event->getArray());
                 }
                 $isOk = TRUE;

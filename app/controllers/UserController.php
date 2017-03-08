@@ -307,6 +307,49 @@ class UserController {
 
         return $response;
     }
+    
+    public function getUsersFollowed($data){
+        $response = new \app\entities\Response();
+        $messageResponse = "Problemas para obtener a los usuarios que sigues. Intentalo más tarde";
+        $isOk = FALSE;
+        try {
+            $columnsResultQuery = "u.user,u.username,u.photo_url,u.place,f.sentNotificacion ";
+            $query = "SELECT " . $columnsResultQuery . " FROM follow f inner join user u ON f.user=u.email WHERE  f.follower_user = :email ";
+            $dataQuery = array("email" => $data["email"]);
+
+            $followed = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
+
+            if ($followed) {
+                $arrayFollowedFinal = array();
+                for ($i = 0; $i < count($followed); $i++) {
+                    $user = new \app\entities\User();
+                    $user->setEmail($followed[$i]["user"]);
+                    $user->setPhoto_url($followed[$i]["photo_url"]);
+                    $user->setPlace($followed[$i]["place"]);
+                    $user->setUsername($followed[$i]["username"]);
+                    $user->setIsSentNotificacion($followed[$i]["sentNotificacion"]);
+                    
+                    array_push($arrayFollowedFinal, $user->getArray());
+                }
+                $isOk = TRUE;
+                $messageResponse = "";
+                $response->setContent(json_encode($arrayFollowedFinal));
+            } else {
+                $isOk = TRUE;
+                $messageResponse = "No sigues a nadie";
+            }
+        } catch (Exception $ex) {
+            print $ex->getMessage();
+        } catch (\PDOException $pex) {
+            print $pex->getMessage();
+        }
+
+
+        $response->setIsOk($isOk);
+        $response->setMessage($messageResponse);
+
+        return $response;
+    }
 
     public function forgotPwd($email) {
         $response = new \app\entities\Response();

@@ -133,7 +133,7 @@ class Race{
             "userName"=> $this->userName,
             "name"=> $this->name,
             "description"=> $this->description,
-            "imageBase64"=> $this->imageBase64,
+            "imageName"=> $this->imageName,
             "distance"=> $this->distance,
             "place"=> $this->place,
             "date_time_init"=> $this->date_time_init,
