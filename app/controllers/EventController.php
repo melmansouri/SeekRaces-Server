@@ -23,6 +23,26 @@ class EventController {
                 $file_path_photo = \app\common\Utils::base64ToFile($data["imageBase64"], \app\common\Utils::getCurrentMilliseconds());
                 $imageName = $file_path_photo;
             }
+            
+            $race= new \app\entities\Race();
+            $user=new \app\entities\User();
+            $user->setEmail($data["userEmail"]);
+            $race->setName($data["name"]);
+            $race->setImageName($imageName);
+            $race->setDescription($data["description"]);
+            $race->setDistance($data["distance"]);
+            $race->setPlace($data["place"]);
+            $race->setDate_time_init($data["date_time_init"]);
+            $race->setWeb($data["web"]);
+            $userController=new \app\controllers\UserController($this->connectionDb);
+            
+            $userFromDb=$userController->checkExistUser($data["userEmail"]);
+            
+            if ($userFromDb) {
+                $user->setUsername($userFromDb->username);
+            }
+            
+            $race->setUser(json_encode($user->getArray()));
 
             $dataQuery = array("user" => $data["userEmail"],
                 "name" => $data["name"],
@@ -34,7 +54,7 @@ class EventController {
                 "web" => $data["web"]);
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                 $isOk = TRUE;
-                $this->sendNotificationToFollowers($data["userEmail"],$data);
+                $this->sendNotificationToFollowers($data["userEmail"],$race->getArray());
                 $messageResponse = "Carrera añadida";
             }
         } catch (Exception $ex) {
@@ -55,16 +75,22 @@ class EventController {
             $tokens = $this->getTokenPushUsersFollowers($userFollowed);
             if ($tokens) {
                 $gcmRegIds = array();
+                print_r($tokens);
                 for ($i = 0; $i < count($tokens); $i++) {
-                    $token = $tokens[$i];
+                    $token = $tokens[$i]["token_push"];
+                    $setNotificacion = $tokens[$i]["sentNotificacion"];
                     if (isset($token) && !empty($token)) {
-                        echo $token;
-                        array_push($gcmRegIds, $token);
+                        if (isset($setNotificacion) && !empty($setNotificacion)) {
+                            if ($setNotificacion==1) {
+                                array_push($gcmRegIds, $token);
+                            }
+                        }
                     }
                 }
+                print_r($gcmRegIds);
                 if (count($gcmRegIds) > 0) {
-                    $result = \app\common\Utils::send_notification($gcmRegIds, json_encode($data));
-                    print "result send push $result";
+                    $result = \app\common\Utils::send_notification($gcmRegIds, $data);
+                    print_r($result);
                 }
             }
         } catch (Exception $ex) {
@@ -75,7 +101,7 @@ class EventController {
     private function getTokenPushUsersFollowers($email) {
         $result = FALSE;
         try {
-            $query = 'SELECT u.token_push FROM follow f inner join user u on f.follower_user=u.email WHERE f.followed_user=:followed';
+            $query = 'SELECT u.token_push,f.sentNotificacion FROM follow f inner join user u on f.follower_user=u.email WHERE f.followed_user=:followed';
             $dataQuery = array('followed' => $email);
             $result = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
         } catch (Exception $ex) {

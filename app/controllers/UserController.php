@@ -261,6 +261,7 @@ class UserController {
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                 $isOk = TRUE;
                 $messageResponse = "unFollow";
+                $response->setContent($messageResponse);
             }
         } catch (Exception $ex) {
             print $ex->getMessage();
@@ -294,6 +295,7 @@ class UserController {
 
             if ($this->connectionDb->executeQueryWithData($query, $dataQuery)) {
                 $isOk = TRUE;
+                $response->setContent("Se ha actualizado con exito");
             }
         } catch (Exception $ex) {
             print $ex->getMessage();
@@ -313,8 +315,8 @@ class UserController {
         $messageResponse = "Problemas para obtener a los usuarios que sigues. Intentalo más tarde";
         $isOk = FALSE;
         try {
-            $columnsResultQuery = "u.user,u.username,u.photo_url,u.place,f.sentNotificacion ";
-            $query = "SELECT " . $columnsResultQuery . " FROM follow f inner join user u ON f.user=u.email WHERE  f.follower_user = :email ";
+            $columnsResultQuery = "u.email,u.username,u.photo_url,u.place,f.sentNotificacion ";
+            $query = "SELECT " . $columnsResultQuery . " FROM follow f inner join user u ON f.followed_user=u.email WHERE  f.follower_user = :email ";
             $dataQuery = array("email" => $data["email"]);
 
             $followed = $this->connectionDb->executeQueryWithDataFetchAll($query, $dataQuery);
@@ -323,7 +325,7 @@ class UserController {
                 $arrayFollowedFinal = array();
                 for ($i = 0; $i < count($followed); $i++) {
                     $user = new \app\entities\User();
-                    $user->setEmail($followed[$i]["user"]);
+                    $user->setEmail($followed[$i]["email"]);
                     $user->setPhoto_url($followed[$i]["photo_url"]);
                     $user->setPlace($followed[$i]["place"]);
                     $user->setUsername($followed[$i]["username"]);
@@ -421,7 +423,7 @@ class UserController {
         return $response;
     }
 
-    private function checkExistUser($email) {
+    public function checkExistUser($email) {
         $query = 'select * from user where email like :email';
         $dataQuery = array(':email' => $email);
 

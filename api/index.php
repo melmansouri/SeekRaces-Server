@@ -45,7 +45,7 @@ $app->post('/user/login', 'login');
 
 $app->post('/user/follow', 'follow');
 
-$app->post('/user/{email}/followed', 'getUsersFollowed');
+$app->get('/user/{email}/followed', 'getUsersFollowed');
 
 $app->delete('/follow/{follower}/{followed}', 'unFollow');
 

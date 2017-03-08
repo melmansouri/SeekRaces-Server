@@ -72,11 +72,11 @@ class Utils {
             $url = 'https://fcm.googleapis.com/fcm/send';
             $fields = array(
                 'registration_ids' => $tokens,
-                'data' => $message
+                'data' =>$message
             );
             $headers = array(
-                'Authorization:key = AIzaSyDmZRb02-RcKK3I080i5D7nqkMpfOJLHVU ',
-                'Content-Type: application/json'
+                'Content-Type:application/json',
+                'Authorization:key=AAAAxvbkOFU:APA91bGMWDoz1xiWT-vWs6RsbBK2bt_ZX4RxjRXw7FnLnQjGvNaHLupXxhqi2ULNtH3F9yzKzcoGb89SEs2l03Ex3Zi3WeZvxTi-qHK-RcJ3qV2FNjYTNd-EECVtNfZtb69nUdtgX3TB'
             );
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
