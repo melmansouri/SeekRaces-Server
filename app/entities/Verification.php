@@ -1,5 +1,5 @@
 <?php
-namespace app\dto;
+namespace app\entities;
 
 class Verification{
     private $email;
