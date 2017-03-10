@@ -84,14 +84,15 @@ class UserController {
     public function insertIntoUserTable($user) {
         $result = FALSE;
         try {
-            $query = "INSERT INTO user(email, username, photo_url, place)"
+            $query = "INSERT INTO user(email, username, photo_url, place, token_push)"
                     . " VALUES"
-                    . " (:email, :username, :photo_url, :place)";
+                    . " (:email, :username, :photo_url, :place, :token_push)";
 
             $dataQuery = array('email' => $user->getEmail(),
                 'username' => $user->getUsername(),
                 'photo_url' => $user->getPhoto_url(),
-                'place' => $user->getPlace());
+                'place' => $user->getPlace(),
+                'token_push'=> $user->getToken_push());
             $pwd = $user->getPwd();
             if (!empty($pwd) && isset($pwd)) {
                 $query = "INSERT INTO user(email, pwd, username, photo_url, place, token_push)"

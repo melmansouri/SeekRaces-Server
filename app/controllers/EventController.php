@@ -356,7 +356,7 @@ class EventController {
             $whereQuery = " WHERE user = :user AND id = :id";
 
             $dataQuery = array(
-                "user" => $data["user"],
+                "user" => $data["userEmail"],
                 "id" => $data["id"],
                 "name" => $data["name"],
                 "description" => $data["description"],
