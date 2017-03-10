@@ -1,11 +1,11 @@
 <?php
 
-require_once '../app/controllers/UserController.php';
-require_once '../app/common/Mail.php';
-require_once '../app/common/Utils.php';
-require_once '../app/connection/ConnectionPDO.php';
-require_once '../app/controllers/VerificationController.php';
-require '../vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
+require_once './app/controllers/UserController.php';
+require_once './app/common/Mail.php';
+require_once './app/common/Utils.php';
+require_once './app/connection/ConnectionPDO.php';
+require_once './app/controllers/VerificationController.php';
+require './vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
 
 if (isset($_GET['token'])) {
     if (isset($_POST['newPassword'])) {
@@ -33,14 +33,14 @@ if (isset($_GET['token'])) {
                     <td colspan="2">Formulario de cambio de contraseña</td>
                 </tr>
                 <tr>
-                    <td><label>New Password</label></td>
+                    <td><label>la nueva contraseña</label></td>
                     <td><input type="password" name="newPassword" class="txtField" /><span id="newPassword" class="required"></span></td>
                 </tr>
-                <td><label>Confirm Password</label></td>
+                <td><label>Confirmar la nueva contraseña</label></td>
                 <td><input type="password" name="confirmPassword" class="txtField" /><span id="confirmPassword" class="required"></span></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><input type="submit" name="submit" value="Submit" class="btnSubmit"></td>
+                    <td colspan="2"><input type="submit" name="GUARDAR" value="Submit" class="btnSubmit"></td>
                 </tr>
             </table>
         </form>
@@ -57,8 +57,13 @@ if (isset($_GET['token'])) {
                     document.getElementById("newPassword").innerHTML = "No puede estar vacío";
                     output = false;
                 }else{
-                    document.getElementById("newPassword").innerHTML = "";
-                    output = true;
+                    if (newPassword.value.length < 6) {
+                        document.getElementById("newPassword").innerHTML = "La longitud mínima son 6 caracteres alfanuméricos";
+                        output = false;
+                    }else{
+                        document.getElementById("newPassword").innerHTML = "";
+                        output = true;
+                    }
                 } 
                 
                 if (!confirmPassword.value) {
@@ -66,8 +71,13 @@ if (isset($_GET['token'])) {
                     document.getElementById("confirmPassword").innerHTML = "No puede estar vacío";
                     output = false;
                 }else{
-                    document.getElementById("confirmPassword").innerHTML = "";
-                    output = true;
+                    if (confirmPassword.value.length < 6) {
+                        document.getElementById("confirmPassword").innerHTML = "La longitud mínima son 6 caracteres alfanuméricos";
+                        output = false;
+                    }else{
+                        document.getElementById("confirmPassword").innerHTML = "";
+                        output = true;
+                    }
                 }
                 if ((output) && (newPassword.value !== confirmPassword.value)) {
                     newPassword.value = "";
@@ -86,4 +96,6 @@ if (isset($_GET['token'])) {
 </html>';
         }
     }
+}else{
+    echo '<h3>No puedes estar aqui</h3>';
 }
