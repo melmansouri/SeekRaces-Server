@@ -25,6 +25,8 @@ class ConnectionPDO {
             }
         } catch (Exception $ex) {
             throw $ex;
+        }catch (\PDOException $pex) {
+            throw $pex;
         }
         return self::$instance;
     }
