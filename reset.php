@@ -40,7 +40,7 @@ if (isset($_GET['token'])) {
                 <td><input type="password" name="confirmPassword" class="txtField" /><span id="confirmPassword" class="required"></span></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><input type="submit" name="GUARDAR" value="Submit" class="btnSubmit"></td>
+                    <td colspan="2"><input type="submit" name="submit" value="Guardar" class="btnSubmit"></td>
                 </tr>
             </table>
         </form>
