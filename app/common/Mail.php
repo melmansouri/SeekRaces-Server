@@ -5,8 +5,8 @@ namespace app\common;
 class Mail {
 
     private $mail;
-    private $username = "seekraces@gmail.com";
-    private $pwd = "seekdevelop89";
+    private $username = "email";
+    private $pwd = "pwd";
 
     public function __construct() {
         $this->mail = new \PHPMailer();
